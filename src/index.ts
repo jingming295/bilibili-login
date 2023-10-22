@@ -1,11 +1,5 @@
-import { Context, Schema } from 'koishi'
-
 export const name = 'bilibili-login'
 
-export interface Config {}
+export * from './API'
 
-export const Config: Schema<Config> = Schema.object({})
-
-export function apply(ctx: Context) {
-  // write your plugin here
-}
+export * from './API/Configuration'

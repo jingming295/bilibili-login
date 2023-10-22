@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bilibili-login",
   "description": "Bilibili Login",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -17,5 +17,12 @@
   ],
   "peerDependencies": {
     "koishi": "^4.15.1"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.33"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "jsdom": "^22.1.0"
   }
 }
