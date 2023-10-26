@@ -8,3 +8,29 @@ interface Refresh {
     };
   }
   
+
+
+  interface RefreshCookieData {
+    RefreshCookiedata: RefreshCookiedata;
+    cookiesObject: CookiesObject;
+  }
+
+  interface RefreshCookiedata {
+    code: number;
+    message: string;
+    ttl: number;
+    data: {
+      status: number;
+      message: string;
+      refresh_token: string;
+    }
+  }
+  
+  interface CookiesObject {
+    SESSDATA: string;
+    Path?: string;
+    Domain?: string;
+    Expires?: string;
+    HttpOnly?: string | undefined;
+    Secure?: string;
+  }

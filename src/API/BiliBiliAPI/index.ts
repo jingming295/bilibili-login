@@ -104,55 +104,54 @@ export class BiliBiliApi
      * @param biliBiliSessData SESSDATA
      * @returns 
      */
-    public async refreshCookie(csrf: string, refresh_csrf: string, refresh_token: string, biliBiliSessData: string)
-    {
+     public async refreshCookie(csrf: string, refresh_csrf: string, refresh_token: string, biliBiliSessData: string) {
         const url = 'https://passport.bilibili.com/x/passport-login/web/cookie/refresh';
-        const headers = {
-            Cookie: `SESSDATA=${biliBiliSessData};`,
-            'Content-Type': 'application/json',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
-        };
-
-        const body = JSON.stringify({
-            csrf: csrf,
-            refresh_csrf: refresh_csrf,
-            source: 'main_web',
-            refresh_token: refresh_token
-        });
-        console.log(body)
-        try
-        {
+        
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        headers.append('Cookie', `SESSDATA=${biliBiliSessData};`);
+        
+        const body = new URLSearchParams();
+        body.append('csrf', csrf);
+        body.append('refresh_csrf', refresh_csrf);
+        body.append('source', 'main_web');
+        body.append('refresh_token', refresh_token);
+    
+        try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: headers,
-                body: body
+                body: body,
             });
+    
+            if (response.ok) {
+                
+                const data: RefreshCookiedata = await response.json();
+    
+                if (data.code === 0) {
+                    const cookies = response.headers.get('set-cookie');
+                    const cookiesArray = cookies.split('; ');
+    
+                    const cookiesObject = {} as CookiesObject;
+                    for (const cookie of cookiesArray) {
+                        const [key, value] = cookie.split('=');
+                        cookiesObject[key] = value;
+                    }
 
-            if (response.ok)
-            {
-                const cookies = response.headers.get('set-cookie');
-                console.log(cookies);
-
-                const data: Refresh = await response.json();
-                console.log(data.code);
-                if (data.code === 0)
-                {
-                    return data;
-                } else
-                {
+                    return {data, cookiesObject};
+                } else {
                     return null;
                 }
-            } else
-            {
+            } else {
                 console.error('Error:', response.status);
                 return null;
             }
-        } catch (error)
-        {
-            console.error('Error:', (error as Error).message);
+        } catch (error) {
+            console.error('Error:', error.message);
             return null;
         }
     }
+    
 
 
 
