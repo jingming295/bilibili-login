@@ -1,46 +1,30 @@
-import { Context } from "koishi";
+import { Context, Logger } from "koishi";
 import { BiliBiliApi } from "./BiliBiliAPI";
 import { Select } from "./Database/select-database";
+import { BilibiliAccount } from "./BilibiliAccount";
 
 export async function apply(ctx: Context, Config: Config)
 {
-  async function init()
+  const logger = new Logger('bilibili-login');
+  try
   {
-
+    const select = new Select(ctx);
+    const bilibiliAccount = new BilibiliAccount(ctx);
     const BilibiliAccountData = await select.select();
-    if (BilibiliAccountData.length !== 1)
+    if (BilibiliAccountData.length !== 1) bilibiliAccount.init(Config);
+    else
     {
-      const refreshData = await biliBiliApi.checkNeedRefresh(Config.csrf, Config.SESSDATA);
-      if (refreshData.code === 0)
-      {
-        const timestamp = refreshData.data.timestamp;
-        const correspondPath = await biliBiliApi.GenerateCrorrespondPath(timestamp);
-        const refreshCsrf = await biliBiliApi.getrefresh_csfr(correspondPath, Config.SESSDATA);
-        const refreshCookie = await biliBiliApi.refreshCookie(Config.csrf, refreshCsrf, Config.refresh_token, Config.SESSDATA);
-        if(refreshCookie && refreshCookie.data.code === 0){
-          console.log(refreshCookie)
-        }
-        
-      }
+      // 设置定时任务，每隔24小时执行一次
+      const interval = 24 * 60 * 60 * 1000; // 24小时的毫秒数
+      setInterval(async () => {
+        await bilibiliAccount.DairyCheckRefresh(BilibiliAccountData[0].csrf, BilibiliAccountData[0].refresh_token, BilibiliAccountData[0].SESSDATA);
+      }, interval);
+      // await bilibiliAccount.DairyCheckRefresh(BilibiliAccountData[0].csrf, BilibiliAccountData[0].refresh_token, BilibiliAccountData[0].SESSDATA);
     }
-  }
-  const select = new Select(ctx);
-  const biliBiliApi = new BiliBiliApi();
-  const refreshData = await biliBiliApi.checkNeedRefresh(Config.csrf, Config.SESSDATA);
-  console.log(`refreshData: ${JSON.stringify(refreshData)}`);
-  if (refreshData !== null && refreshData.data.refresh === true)
+  } catch (error)
   {
-    const timestamp = refreshData.data.timestamp;
-    // console.log(`timestamp: ${timestamp}`)
-    const correspondPath = await biliBiliApi.GenerateCrorrespondPath(timestamp);
-    // console.log(`correspondPath: ${correspondPath}`)
-    const refreshCsrf = await biliBiliApi.getrefresh_csfr(correspondPath, Config.SESSDATA);
-    // console.log(`refreshCsrf: ${refreshCsrf}`)
-    const refreshCookie = await biliBiliApi.refreshCookie(Config.csrf, refreshCsrf, Config.refresh_token, Config.SESSDATA);
-    // console.log(refreshCookie)
+    logger.warn(error);
   }
-
-  init();
 
 
 }

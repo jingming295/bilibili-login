@@ -28,9 +28,9 @@ interface Refresh {
   
   interface CookiesObject {
     SESSDATA: string;
-    Path?: string;
-    Domain?: string;
-    Expires?: string;
-    HttpOnly?: string | undefined;
-    Secure?: string;
+    Path: string;
+    Domain: string;
+    Expires: string;
+    HttpOnly: string | undefined;
+    'Secure, bili_jct': string;
   }

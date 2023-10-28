@@ -1,6 +1,23 @@
 import * as crypto from 'crypto';
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+class CheckRefreshError extends Error
+{
+    constructor(message: string)
+    {
+        super(message);
+        this.name = 'CheckRefreshError'; // 设置自定义的错误名称
+    }
+}
+
+class GetRefreshCookieError extends Error
+{
+    constructor(message: string)
+    {
+        super(message);
+        this.name = 'GetRefreshCookieError'; // 设置自定义的错误名称
+    }
+}
 
 export class BiliBiliApi
 {
@@ -15,42 +32,28 @@ export class BiliBiliApi
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
         };
 
-        try
+        const response = await fetch(`${url}?${params}`, { headers });
+        if (response.ok)
         {
-            const response = await fetch(`${url}?${params}`, { headers });
-            if (response.ok)
-            {
 
-                const data: Refresh = await response.json();
-                if (data.code === 0)
-                {
-                    return data;
-                } else
-                {
-                    return null;
-                }
+            const data: Refresh = await response.json();
+            if (data.code === 0)
+            {
+                return data;
             } else
             {
-                console.error('Error:', response.status);
-                return null;
+                throw new CheckRefreshError(data.code.toString());
             }
-        } catch (error)
+        } else if (!response.ok)
         {
-            console.error('Error:', (error as Error).message);
-            return null;
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+
     }
 
     public async GenerateCrorrespondPath(timestamp: number)
     {
-
-        async function getCorrespondPath(timestamp)
-        {
-            const data = new TextEncoder().encode(`refresh_${timestamp}`);
-            const encrypted = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, data));
-            return encrypted.reduce((str, c) => str + c.toString(16).padStart(2, "0"), "");
-        }
-
         const publicKey = await crypto.subtle.importKey(
             "jwk",
             {
@@ -62,7 +65,9 @@ export class BiliBiliApi
             true,
             ["encrypt"],
         );
-        return await getCorrespondPath(timestamp);
+        const data = new TextEncoder().encode(`refresh_${timestamp}`);
+        const encrypted = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, data));
+        return encrypted.reduce((str, c) => str + c.toString(16).padStart(2, "0"), "");
     }
 
     public async getrefresh_csfr(correspondPath: string, biliBiliSessData: string)
@@ -83,10 +88,9 @@ export class BiliBiliApi
                 const refreshCsrf = dom.window.document.querySelector('[id="1-name"]').textContent;
                 return refreshCsrf;
 
-            } else
+            } else if (!response.ok)
             {
-                console.error('Error:', response.status);
-                return null;
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
         } catch (error)
         {
@@ -104,54 +108,54 @@ export class BiliBiliApi
      * @param biliBiliSessData SESSDATA
      * @returns 
      */
-     public async refreshCookie(csrf: string, refresh_csrf: string, refresh_token: string, biliBiliSessData: string) {
+    public async refreshCookie(csrf: string, refresh_csrf: string, refresh_token: string, biliBiliSessData: string)
+    {
         const url = 'https://passport.bilibili.com/x/passport-login/web/cookie/refresh';
-        
+
         const headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         headers.append('Cookie', `SESSDATA=${biliBiliSessData};`);
-        
+
         const body = new URLSearchParams();
         body.append('csrf', csrf);
         body.append('refresh_csrf', refresh_csrf);
         body.append('source', 'main_web');
         body.append('refresh_token', refresh_token);
-    
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: headers,
-                body: body,
-            });
-    
-            if (response.ok) {
-                
-                const data: RefreshCookiedata = await response.json();
-    
-                if (data.code === 0) {
-                    const cookies = response.headers.get('set-cookie');
-                    const cookiesArray = cookies.split('; ');
-    
-                    const cookiesObject = {} as CookiesObject;
-                    for (const cookie of cookiesArray) {
-                        const [key, value] = cookie.split('=');
-                        cookiesObject[key] = value;
-                    }
 
-                    return {data, cookiesObject};
-                } else {
-                    return null;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: body,
+        });
+
+        if (response.ok)
+        {
+            const data: RefreshCookiedata = await response.json();
+
+            if (data.code === 0)
+            {
+                const cookies = response.headers.get('set-cookie');
+                const cookiesArray = cookies.split('; ');
+
+                const cookiesObject = {} as CookiesObject;
+                for (const cookie of cookiesArray)
+                {
+                    const [key, value] = cookie.split('=');
+                    cookiesObject[key] = value;
                 }
-            } else {
-                console.error('Error:', response.status);
-                return null;
+
+                return { data, cookiesObject };
+            } else
+            {
+                throw new GetRefreshCookieError(data.code.toString());
             }
-        } catch (error) {
-            console.error('Error:', error.message);
-            return null;
+        } else if (!response.ok)
+        {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
     }
-    
+
 
 
 
