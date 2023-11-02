@@ -32,7 +32,6 @@ export class BilibiliAccount
             {
                 const insert = new Insert(this.ctx);
                 insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject["Secure, bili_jct"], refreshCookie.data.data.refresh_token, refreshCookie.cookiesObject.SESSDATA);
-                // console.log(refreshCookie.cookiesObject['Secure, bili_jct'])
             }
 
         }
@@ -79,5 +78,14 @@ export class BilibiliAccount
             else return this.errorHandle.ErrorHandle((error as Error).message);
         }
 
+    }
+
+    returnBilibiliAccountData(SESSDATA:string, csrf:string, refresh_token:string){
+        const BilibiliAccountData:BilibiliAccountData = {
+            SESSDATA: SESSDATA,
+            csrf: csrf,
+            refresh_token: refresh_token
+        }
+        return BilibiliAccountData
     }
 }

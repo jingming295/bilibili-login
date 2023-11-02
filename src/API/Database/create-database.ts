@@ -1,7 +1,5 @@
 import { Context} from 'koishi'
 
-export const using = ['database']
-
 export class CreateDatabase{
     ctx:Context
 

@@ -28,11 +28,8 @@ Bilibili Login
 
 ## [bilibili-login](https://github.com/jingming295/bilibili-login)
 
-## 计划
+## 如何使用
+import { } from 'koishi-plugin-bilibili-login'
+然后ctx.bilibiliLogin.bilibiliAccountData 获取sessdata, csrf, refresh_token
 
-- [x] 检查是否需要刷新
-- [x] 生成CorrespondPath算法
-- [x] 拿到refresh_csrf
-- [ ] 刷新cookie获取新的sid、DedeUserID、DedeUserID__ckMd5、SESSDATA、bili_jct
-- [ ] 使其他用此插件当前置的koishi插件能够拿到新的sid、DedeUserID、DedeUserID__ckMd5、SESSDATA、bili_jct
-- [ ] 自动化
+
