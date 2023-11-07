@@ -3,7 +3,7 @@ import { CreateDatabase } from './create-database'
 
 export class Insert extends CreateDatabase{
     
-    async insertIntoBilibiliAccountData(csrf, refresh_token, SESSDATA){
+    async insertIntoBilibiliAccountData(SESSDATA:string, csrf:string, refresh_token:string){
       const row = {
         id: 1,
         csrf: csrf,

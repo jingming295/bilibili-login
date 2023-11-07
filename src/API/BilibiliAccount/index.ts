@@ -23,19 +23,20 @@ export class BilibiliAccount
      */
     async init(config: Config)
     {
+        this.logger.info('第一次登录中，正在初始化。。。');
         const biliBiliApi = new BiliBiliApi;
         const refreshData = await biliBiliApi.checkNeedRefresh(config.csrf, config.SESSDATA);
-        if (refreshData.code === 0)
-        {
-            const refreshCookie = await this.getRefreshCookie(refreshData, config.csrf, config.refresh_token, config.SESSDATA);
-            if (refreshCookie && refreshCookie.data.code === 0)
+            if (refreshData && refreshData.code === 0)
             {
-                const insert = new Insert(this.ctx);
-                insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject["Secure, bili_jct"], refreshCookie.data.data.refresh_token, refreshCookie.cookiesObject.SESSDATA);
+                this.logger.info('成功登录，正在刷新cookie');
+                const refreshCookie = await this.getRefreshCookie(refreshData, config.csrf, config.refresh_token, config.SESSDATA);
+                if (refreshCookie && refreshCookie.responseData.code === 0)
+                {
+                    const insert = new Insert(this.ctx);
+                    insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA,refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token);
+                    this.logger.info('cookie保存成功');
+                }
             }
-
-        }
-
     }
 
     async getRefreshCookie(refreshData: Refresh, csrf: string, refresh_token: string, SESSDATA: string)
@@ -49,43 +50,36 @@ export class BilibiliAccount
         // console.log(`refreshCsrf: ${refreshCsrf}`)
         const refreshCookie = await biliBiliApi.refreshCookie(csrf, refreshCsrf, refresh_token, SESSDATA);
         // console.log(refreshCookie)
-        if (refreshCookie.data.code === 0) return refreshCookie;
+        await biliBiliApi.confirmRefreshCookie(refreshCookie.cookiesObject.bili_jct, refresh_token, refreshCookie.cookiesObject.SESSDATA)
+        this.logger.info('成功让旧的cookie失效')
+        return refreshCookie;
     }
 
     async DairyCheckRefresh(csrf: string, refresh_token: string, SESSDATA: string)
     {
-        try
+
+        const update = new Update(this.ctx);
+        const biliBiliApi = new BiliBiliApi();
+        const refreshData = await biliBiliApi.checkNeedRefresh(csrf, SESSDATA);
+        if (refreshData.code !== 0) throw new Error(`无法检测账号是否需要刷新, code:${refreshData.code} message:${refreshData.message}`);
+        if (refreshData && refreshData.data.refresh === true)
         {
-            const update = new Update(this.ctx)
-            const biliBiliApi = new BiliBiliApi();
-            const refreshData = await biliBiliApi.checkNeedRefresh(csrf, SESSDATA);
-            if (refreshData !== null && refreshData.data.refresh === true)
-            {
-                const refreshCookie = await this.getRefreshCookie(refreshData, csrf, refresh_token, SESSDATA);
-                console.log(refreshCookie);
-                update.setBilibiliAccountData(refreshCookie.cookiesObject["Secure, bili_jct"], refreshCookie.data.data.refresh_token, refreshCookie.cookiesObject.SESSDATA)
-            }
-        } catch (error)
-        {
-            if ((error as Error).message === '-101' && (error as Error).name === 'CheckRefreshError')
-                return this.errorHandle.ErrorHandle('bilibili账号登录失败，极有可能是数据库里面的账号信息失效了');
-            if ((error as Error).message === '-101' && (error as Error).name === 'GetRefreshCookieError')
-                return this.errorHandle.ErrorHandle('bilibili账号登录失败，极有可能是数据库里面的账号信息失效了');
-            if ((error as Error).message === '-111' && (error as Error).name === 'GetRefreshCookieError')
-                return this.errorHandle.ErrorHandle('bilibili的csrf校验失败，极有可能是数据库里面的账号信息失效了');
-            if ((error as Error).message === '-400' && (error as Error).name === 'GetRefreshCookieError')
-                return this.errorHandle.ErrorHandle('GetRefreshCookie请求错误');
-            else return this.errorHandle.ErrorHandle((error as Error).message);
+            this.logger.info('检测到需要刷新cookie');
+            const refreshCookie = await this.getRefreshCookie(refreshData, csrf, refresh_token, SESSDATA);
+            update.setBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token);
+            this.logger.info('cookie刷新并保存成功');
         }
+
 
     }
 
-    returnBilibiliAccountData(SESSDATA:string, csrf:string, refresh_token:string){
-        const BilibiliAccountData:BilibiliAccountData = {
+    returnBilibiliAccountData(SESSDATA: string, csrf: string, refresh_token: string)
+    {
+        const BilibiliAccountData: BilibiliAccountData = {
             SESSDATA: SESSDATA,
             csrf: csrf,
             refresh_token: refresh_token
-        }
-        return BilibiliAccountData
+        };
+        return BilibiliAccountData;
     }
 }

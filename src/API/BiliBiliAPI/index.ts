@@ -1,27 +1,11 @@
-import * as crypto from 'crypto';
+const crypto = require('crypto');
+import axios from 'axios';
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-class CheckRefreshError extends Error
-{
-    constructor(message: string)
-    {
-        super(message);
-        this.name = 'CheckRefreshError'; // 设置自定义的错误名称
-    }
-}
-
-class GetRefreshCookieError extends Error
-{
-    constructor(message: string)
-    {
-        super(message);
-        this.name = 'GetRefreshCookieError'; // 设置自定义的错误名称
-    }
-}
 
 export class BiliBiliApi
 {
-    public async checkNeedRefresh(csrf: string | null, biliBiliSessData: string)
+    public async checkNeedRefresh(csrf: string, biliBiliSessData: string)
     {
         const url = 'https://passport.bilibili.com/x/passport-login/web/cookie/info';
         const params = new URLSearchParams({
@@ -31,42 +15,42 @@ export class BiliBiliApi
             Cookie: `SESSDATA=${biliBiliSessData};`,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
         };
+        const response = await axios.get(`${url}?${params.toString()}`, { headers });
 
-        const response = await fetch(`${url}?${params}`, { headers });
-        if (response.ok)
+        if (response.status === 200)
         {
-
-            const data: Refresh = await response.json();
+            const data: Refresh = response.data;
             if (data.code === 0)
             {
                 return data;
             } else
             {
-                throw new CheckRefreshError(data.code.toString());
+                throw new Error(`checkNeedRefresh code:${data.code} message: ${data.message}`);
             }
-        } else if (!response.ok)
+        } else
         {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-
     }
 
-    public async GenerateCrorrespondPath(timestamp: number)
-    {
-        const publicKey = await crypto.subtle.importKey(
+    async GenerateCrorrespondPath(timestamp:number) {
+        const publicKeyData = {
+            kty: "RSA",
+            n: "y4HdjgJHBlbaBN04VERG4qNBIFHP6a3GozCl75AihQloSWCXC5HDNgyinEnhaQ_4-gaMud_GF50elYXLlCToR9se9Z8z433U3KjM-3Yx7ptKkmQNAMggQwAVKgq3zYAoidNEWuxpkY_mAitTSRLnsJW-NCTa0bqBFF6Wm1MxgfE",
+            e: "AQAB",
+        };
+    
+        const publicKey = await crypto.webcrypto.subtle.importKey(
             "jwk",
-            {
-                kty: "RSA",
-                n: "y4HdjgJHBlbaBN04VERG4qNBIFHP6a3GozCl75AihQloSWCXC5HDNgyinEnhaQ_4-gaMud_GF50elYXLlCToR9se9Z8z433U3KjM-3Yx7ptKkmQNAMggQwAVKgq3zYAoidNEWuxpkY_mAitTSRLnsJW-NCTa0bqBFF6Wm1MxgfE",
-                e: "AQAB",
-            },
+            publicKeyData,
             { name: "RSA-OAEP", hash: "SHA-256" },
             true,
-            ["encrypt"],
+            ["encrypt"]
         );
+    
         const data = new TextEncoder().encode(`refresh_${timestamp}`);
-        const encrypted = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, data));
+        const encrypted = new Uint8Array(await crypto.webcrypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, data));
         return encrypted.reduce((str, c) => str + c.toString(16).padStart(2, "0"), "");
     }
 
@@ -77,25 +61,26 @@ export class BiliBiliApi
             Cookie: `SESSDATA=${biliBiliSessData};`,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
         };
+
         try
         {
-            const response = await fetch(url, { headers });
+            const response = await axios.get(url, { headers });
 
-            if (response.ok)
+            if (response.status === 200)
             {
-                const htmlContent = await response.text();
+                const htmlContent = response.data;
                 const dom = new JSDOM(htmlContent);
-                const refreshCsrf = dom.window.document.querySelector('[id="1-name"]').textContent;
+                const refreshCsrf: string = dom.window.document.querySelector('[id="1-name"]').textContent;
                 return refreshCsrf;
 
-            } else if (!response.ok)
+            } else
             {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
         } catch (error)
         {
             console.error('Error:', error);
-            return null;
+            throw error;
         }
     }
 
@@ -110,55 +95,120 @@ export class BiliBiliApi
      */
     public async refreshCookie(csrf: string, refresh_csrf: string, refresh_token: string, biliBiliSessData: string)
     {
+        function parseCookies(cookiesArray: string[]): CookiesObject
+        {
+            const cookiesObject: CookiesObject = {} as CookiesObject;
+
+            for (const cookie of cookiesArray)
+            {
+                const [name, value] = cookie.split('=');
+                const trimmedValue = value.split(';')[0]; // 去掉分号后面的内容
+                switch (name)
+                {
+                    case 'SESSDATA':
+                        cookiesObject.SESSDATA = decodeURIComponent(trimmedValue);
+                        break;
+                    case 'bili_jct':
+                        cookiesObject.bili_jct = decodeURIComponent(trimmedValue);
+                        break;
+                    case 'DedeUserID':
+                        cookiesObject.DedeUserID = decodeURIComponent(trimmedValue);
+                        break;
+                    case 'DedeUserID__ckMd5':
+                        cookiesObject.DedeUserID__ckMd5 = decodeURIComponent(trimmedValue);
+                        break;
+                    case 'sid':
+                        cookiesObject.sid = decodeURIComponent(trimmedValue);
+                        break;
+                }
+            }
+
+            return cookiesObject;
+        }
         const url = 'https://passport.bilibili.com/x/passport-login/web/cookie/refresh';
 
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        headers.append('Cookie', `SESSDATA=${biliBiliSessData};`);
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Cookie: `SESSDATA=${biliBiliSessData};`
+        };
 
-        const body = new URLSearchParams();
-        body.append('csrf', csrf);
-        body.append('refresh_csrf', refresh_csrf);
-        body.append('source', 'main_web');
-        body.append('refresh_token', refresh_token);
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: body,
+        const data = new URLSearchParams();
+        data.append('csrf', csrf);
+        data.append('refresh_csrf', refresh_csrf);
+        data.append('source', 'main_web');
+        data.append('refresh_token', refresh_token);
+        const response = await axios.post(url, data, {
+            headers: headers
         });
 
-        if (response.ok)
+        if (response.status === 200)
         {
-            const data: RefreshCookiedata = await response.json();
-
-            if (data.code === 0)
+            const responseData: RefreshCookiedata = response.data;
+            switch (responseData.code)
             {
-                const cookies = response.headers.get('set-cookie');
-                const cookiesArray = cookies.split('; ');
+                case 0:
+                    const cookies = response.headers['set-cookie'];
+                    if (!cookies) throw new Error('GetRefreshCookie: 获取的cookie为空');
 
-                const cookiesObject = {} as CookiesObject;
-                for (const cookie of cookiesArray)
-                {
-                    const [key, value] = cookie.split('=');
-                    cookiesObject[key] = value;
-                }
+                    const cookiesObject = parseCookies(cookies);
 
-                return { data, cookiesObject };
-            } else
-            {
-                throw new GetRefreshCookieError(data.code.toString());
+                    return { responseData, cookiesObject };
+
+                case -101:
+                    throw new Error('bilibili账号登录失败，极有可能是数据库里面的账号信息失效了');
+
+                case -111:
+                    throw new Error('bilibili的csrf校验失败，极有可能是数据库里面的账号信息失效了');
+
+                default:
+                    throw new Error(`GetRefreshCookie code:${responseData.code}, message:${responseData.message}`);
             }
-        } else if (!response.ok)
+        } else
+        {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    }
+
+    public async confirmRefreshCookie(csrf: string, refresh_token: string, biliBiliSessData: string)
+    {
+
+        const url = 'https://passport.bilibili.com/x/passport-login/web/confirm/refresh';
+
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Cookie: `SESSDATA=${biliBiliSessData};`
+        };
+
+        const data = new URLSearchParams();
+        data.append('csrf', csrf);
+        data.append('refresh_token', refresh_token);
+        const response = await axios.post(url, data, {
+            headers: headers
+        });
+
+        if (response.status === 200)
+        {
+            const responseData: RefreshCookiedata = response.data;
+            switch (responseData.code)
+            {
+                case 0:
+                    
+                break
+                case -101:
+                    throw new Error('bilibili账号登录失败，极有可能是数据库里面的账号信息失效了');
+
+                case -111:
+                    throw new Error('bilibili的csrf校验失败，极有可能是数据库里面的账号信息失效了');
+
+                default:
+                    throw new Error(`GetRefreshCookie code:${responseData.code}, message:${responseData.message}`);
+            }
+        } else
         {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+
     }
-
-
-
-
-
 
 }

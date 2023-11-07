@@ -30,6 +30,6 @@ Bilibili Login
 
 ## 如何使用
 import { } from 'koishi-plugin-bilibili-login'
-然后ctx.bilibiliLogin.bilibiliAccountData 获取sessdata, csrf, refresh_token
+然后ctx.bilibiliLogin.getBilibiliAccountData() 获取sessdata, csrf, refresh_token
 
 
