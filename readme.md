@@ -29,7 +29,14 @@ Bilibili Login
 ## [bilibili-login](https://github.com/jingming295/bilibili-login)
 
 ## 如何使用
+```typescript
+import { Context } from 'koishi'
 import { } from 'koishi-plugin-bilibili-login'
-然后ctx.bilibiliLogin.getBilibiliAccountData() 获取sessdata, csrf, refresh_token
-
-
+export const inject = ['bilibiliLogin'];
+export const name = 'example'
+export async function apply(ctx: Context)
+{
+  const bilibiliAccountData = await ctx.bilibiliLogin.getBilibiliAccountData() // 获取sessdata, csrf, refresh_token
+  console.log(bilibiliAccountData)
+}
+```
