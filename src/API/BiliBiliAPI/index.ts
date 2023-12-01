@@ -143,14 +143,14 @@ export class BiliBiliApi
         if (response.status === 200)
         {
             const responseData: RefreshCookiedata = response.data;
+            let cookiesObject:CookiesObject
+            let cookies: string[] | undefined
             switch (responseData.code)
             {
                 case 0:
-                    const cookies = response.headers['set-cookie'];
+                    cookies = response.headers['set-cookie'];
                     if (!cookies) throw new Error('GetRefreshCookie: 获取的cookie为空');
-
-                    const cookiesObject = parseCookies(cookies);
-
+                    cookiesObject = parseCookies(cookies);
                     return { responseData, cookiesObject };
 
                 case -101:

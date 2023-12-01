@@ -76,6 +76,7 @@ export class BilibiliAccount
             }
 
         }, interval);
+        return refreshAccountInterval;
     }
 
     async getRefreshCookie(refreshData: Refresh, csrf: string, refresh_token: string, SESSDATA: string)

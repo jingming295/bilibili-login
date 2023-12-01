@@ -34,7 +34,7 @@ export async function apply(ctx: Context, Config: Config)
     }
 
     // 设置定时任务
-    bilibiliAccount.intervalTask(select,update,Config,refreshAccountInterval);
+    refreshAccountInterval = await bilibiliAccount.intervalTask(select,update,Config,refreshAccountInterval);
     logger.info('成功设置自动刷新cookie的定时任务');
 
   } catch (error)

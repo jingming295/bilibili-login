@@ -23,6 +23,7 @@ Bilibili Login
 </div>
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-bilibili-login?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-bilibili-login)
+[![CodeFactor](https://www.codefactor.io/repository/github/jingming295/bilibili-login/badge)](https://www.codefactor.io/repository/github/jingming295/bilibili-login)
 
 # 🎉B站登录
 
