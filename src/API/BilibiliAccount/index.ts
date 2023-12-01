@@ -34,7 +34,7 @@ export class BilibiliAccount
             if (refreshCookie && refreshCookie.responseData.code === 0)
             {
                 const insert = new Insert(this.ctx);
-                insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token);
+                insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token, refreshCookie.cookiesObject.DedeUserID, refreshCookie.cookiesObject.DedeUserID__ckMd5, refreshCookie.cookiesObject.sid);
                 this.logger.info('cookie保存成功');
             }
         }
@@ -109,20 +109,10 @@ export class BilibiliAccount
         {
             this.logger.info('检测到需要刷新cookie');
             const refreshCookie = await this.getRefreshCookie(refreshData, csrf, refresh_token, SESSDATA);
-            update.setBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token);
-            this.logger.info('cookie刷新并保存成功');
+            update.setBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token, refreshCookie.cookiesObject.DedeUserID, refreshCookie.cookiesObject.DedeUserID__ckMd5, refreshCookie.cookiesObject.sid);
+            this.logger.info('cookie已刷新，并且保存成功');
         }
 
 
-    }
-
-    returnBilibiliAccountData(SESSDATA: string, csrf: string, refresh_token: string)
-    {
-        const BilibiliAccountData: BilibiliAccountData = {
-            SESSDATA: SESSDATA,
-            csrf: csrf,
-            refresh_token: refresh_token
-        };
-        return BilibiliAccountData;
     }
 }

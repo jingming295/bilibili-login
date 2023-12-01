@@ -98,7 +98,6 @@ export class BiliBiliApi
         function parseCookies(cookiesArray: string[]): CookiesObject
         {
             const cookiesObject: CookiesObject = {} as CookiesObject;
-
             for (const cookie of cookiesArray)
             {
                 const [name, value] = cookie.split('=');
