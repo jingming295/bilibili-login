@@ -4,6 +4,7 @@ interface Config
   csrf: string;
   refresh_token: string;
   RefreshTimeHours:number
+  refresh:boolean
 }
 
 interface BilibiliAccountData

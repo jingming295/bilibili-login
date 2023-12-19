@@ -33,15 +33,20 @@ export async function apply(ctx: Context, Config: Config)
       if (bilibiliAccountData.length !== 1) throw new Error('数据无效');
     }
 
-    // 设置定时任务
-    refreshAccountInterval = await bilibiliAccount.intervalTask(select,update,Config,refreshAccountInterval);
-    logger.info('成功设置自动刷新cookie的定时任务');
+    if (Config.refresh)
+    {
+      // 设置定时任务
+      refreshAccountInterval = await bilibiliAccount.intervalTask(select, update, Config, refreshAccountInterval);
+      logger.info('成功设置自动刷新cookie的定时任务');
+    }
+
 
   } catch (error)
   {
     logger.warn((error as Error));
     const bilibiliAccountData = await select.select();
-    if(bilibiliAccountData.length === 1){
+    if (bilibiliAccountData.length === 1)
+    {
       update.deleteBilibiliAccountData();
     }
     logger.warn(
