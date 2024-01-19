@@ -4,6 +4,7 @@ import { Insert } from "../Database/insert-database";
 import { ErrorHandle } from "../ErrorHandle";
 import { Update } from "../Database/update-database";
 import { Select } from "../Database/select-database";
+import { Config } from "../Configuration";
 
 export class BilibiliAccount
 {

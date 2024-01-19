@@ -4,6 +4,7 @@ import { BilibiliAccount } from "./BilibiliAccount";
 import { bilibiliLogin } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
+import { Config } from "./Configuration";
 
 
 export async function apply(ctx: Context, Config: Config)

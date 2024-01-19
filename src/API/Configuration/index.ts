@@ -1,5 +1,12 @@
 import { Schema } from "koishi";
-export interface Config { }
+export interface Config
+{
+  SESSDATA: string;
+  csrf: string;
+  refresh_token: string;
+  RefreshTimeHours:number
+  refresh:boolean
+}
 
 /**
  * @description 设置配置

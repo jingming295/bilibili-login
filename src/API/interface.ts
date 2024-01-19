@@ -1,13 +1,6 @@
-interface Config
-{
-  SESSDATA: string;
-  csrf: string;
-  refresh_token: string;
-  RefreshTimeHours:number
-  refresh:boolean
-}
 
-interface BilibiliAccountData
+
+export interface BilibiliAccountData
 {
   SESSDATA: string;
   csrf: string;
