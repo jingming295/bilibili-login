@@ -8,16 +8,19 @@ declare module 'koishi' {
 }
 export class bilibiliLogin extends Service
 {
+  ctx
   async getBilibiliAccountData(){
     const select = new Select(this.ctx);
     const data:BilibiliAccountData[] = await select.select() as unknown as BilibiliAccountData[];
     const bilibiliAccountData:BilibiliAccountData = data[0]
-    return bilibiliAccountData
+    return bilibiliAccountData;
+    
   }
 
   constructor(ctx: Context)
   {
     super(ctx, 'bilibiliLogin', true);
+    this.ctx = ctx;
   }
 }
 interface BilibiliAccountData
