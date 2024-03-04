@@ -1,4 +1,26 @@
-interface Refresh {
+export interface QRcode{
+    code: number;
+    message: string;
+    ttl: number;
+    data: {
+      url: string;
+      qrcode_key: string;
+    };
+}
+export interface qrLogin{
+    code: number;
+    message: string;
+    ttl: number;
+    data: {
+      url: string;
+      refresh_token: string;
+      timestamp: number;
+      code: number;
+      message: string;
+    };
+}
+
+export interface Refresh {
     code: number;
     message: string;
     ttl: number;
@@ -15,7 +37,7 @@ interface Refresh {
     cookiesObject: CookiesObject;
   }
 
-  interface RefreshCookiedata {
+  export interface RefreshCookiedata {
     code: number;
     message: string;
     ttl: number;
@@ -26,7 +48,7 @@ interface Refresh {
     }
   }
   
-  interface CookiesObject {
+  export interface CookiesObject {
     SESSDATA: string;
     bili_jct: string;
     DedeUserID: string;

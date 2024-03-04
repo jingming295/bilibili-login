@@ -6,6 +6,5 @@ export interface BilibiliAccountData
   csrf: string;
   refresh_token: string;
   DedeUserID: string,
-  DedeUserID__ckMd5: string,
-  sid: string
+  DedeUserID__ckMd5: string
 }

@@ -1,10 +1,42 @@
 const crypto = require('crypto');
 import axios from 'axios';
+import { CookiesObject, QRcode, Refresh, RefreshCookiedata, qrLogin } from './interface';
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 export class BiliBiliApi
 {
+
+    public async QRLogin(qrcode_key: string){
+        const url = 'https://passport.bilibili.com/x/passport-login/web/qrcode/poll';
+        const headers = {
+        };
+        const data = new URLSearchParams();
+        data.append('qrcode_key', qrcode_key);
+        const response = await axios.get(url, { headers, params: data });
+        if (response.status === 200)
+        {
+            const responseData: qrLogin = response.data;
+            return responseData;
+        } else
+        {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    }
+
+    async getQRCode(){
+        const url = 'https://passport.bilibili.com/x/passport-login/web/qrcode/generate';
+        const response = await axios.get(url);
+        if (response.status === 200)
+        {
+            const data = response.data as QRcode;
+            return data;
+        } else
+        {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    }
+
     public async checkNeedRefresh(csrf: string, biliBiliSessData: string)
     {
         const url = 'https://passport.bilibili.com/x/passport-login/web/cookie/info';

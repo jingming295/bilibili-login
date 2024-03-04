@@ -5,6 +5,8 @@ import { ErrorHandle } from "../ErrorHandle";
 import { Update } from "../Database/update-database";
 import { Select } from "../Database/select-database";
 import { Config } from "../Configuration";
+import { Refresh, qrLogin } from "../BiliBiliAPI/interface";
+import * as qr from 'qrcode-terminal';
 
 export class BilibiliAccount
 {
@@ -19,26 +21,79 @@ export class BilibiliAccount
         this.errorHandle = new ErrorHandle();
     }
 
+    
+
     /**
      * 初始化
      * @param config 
      */
-    async init(config: Config)
+    async init()
     {
-        this.logger.info('第一次登录中，正在初始化。。。');
+        function delay(ms: number) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        function getRandomInt(min: number, max: number) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        this.logger.info('登录中，正在初始化。。。');
         const biliBiliApi = new BiliBiliApi;
-        const refreshData = await biliBiliApi.checkNeedRefresh(config.csrf, config.SESSDATA);
-        if (refreshData && refreshData.code === 0)
+
+        let qrCode = await biliBiliApi.getQRCode();
+        let qrLogin:qrLogin;
+        this.logger.info(`请使用B站APP扫描二维码进行登录`);
+        qr.generate(qrCode.data.url, { small: true });
+        do
+        {
+            if(qrCode.code !== 0) throw new Error(`无法验证扫码登录, code:${qrCode.code} message:${qrCode.message}`);
+            qrLogin = await biliBiliApi.QRLogin(qrCode.data.qrcode_key);
+            if (qrLogin.data.code === 0)
+            {
+                break;
+            }
+            else if(qrLogin.data.code === 86101){
+                // 未扫码
+            }
+            else if (qrLogin.data.code === 86038)
+            {
+                this.logger.info('二维码已经失效，正在重新获取二维码');
+                qrCode = await biliBiliApi.getQRCode();
+                qr.generate(qrCode.data.url, { small: true });
+            }
+            else if (qrLogin.data.code === 86090)
+            {
+                // 扫码未登录
+            }
+            await delay(getRandomInt(1800, 2200));
+            this.ctx.on('dispose', () => {
+                return;
+            });
+        } while (true);
+
+        const parsedCookie = new URL(qrLogin.data.url)
+        const DedeUserID = parsedCookie.searchParams.get('DedeUserID');
+        const DedeUserID__ckMd5 = parsedCookie.searchParams.get('DedeUserID__ckMd5');
+        const Expires = parsedCookie.searchParams.get('Expires');
+        const SESSDATA = parsedCookie.searchParams.get('SESSDATA');
+        const bili_jct = parsedCookie.searchParams.get('bili_jct');
+        const gourl = parsedCookie.searchParams.get('gourl');
+        const refresh_token = qrLogin.data.refresh_token;
+
+        if(!DedeUserID || !DedeUserID__ckMd5 || !Expires || !SESSDATA || !bili_jct || !gourl || !refresh_token) throw new Error('无法解析Cookie');
+
+        const data = await this.checkAccountStatus(bili_jct, SESSDATA);
+        if (data && data.code === 0)
         {
             this.logger.info('成功登录，正在刷新cookie');
-            const refreshCookie = await this.getRefreshCookie(refreshData, config.csrf, config.refresh_token, config.SESSDATA);
-            if (refreshCookie && refreshCookie.responseData.code === 0)
-            {
-                const insert = new Insert(this.ctx);
-                insert.insertIntoBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token, refreshCookie.cookiesObject.DedeUserID, refreshCookie.cookiesObject.DedeUserID__ckMd5, refreshCookie.cookiesObject.sid);
-                this.logger.info('cookie保存成功');
-            }
+            const insert = new Insert(this.ctx);
+            insert.insertIntoBilibiliAccountData(SESSDATA, bili_jct, refresh_token, DedeUserID, DedeUserID__ckMd5);
+            this.logger.info('cookie保存成功');
         }
+    }
+
+    public async checkAccountStatus(bili_jct:string, SESSDATA:string){
+        const biliBiliApi = new BiliBiliApi();
+        return await biliBiliApi.checkNeedRefresh(bili_jct, SESSDATA);
     }
 
     async intervalTask(select: Select, update: Update, Config: Config, refreshAccountInterval: NodeJS.Timeout | undefined)
