@@ -1,21 +1,23 @@
 import { Context, Logger } from "koishi";
 import { Select } from "./Database/select-database";
 import { BilibiliAccount } from "./BilibiliAccount";
-import { bilibiliLogin } from "./Service";
+import { bilibiliLogin, bilibiliVideo } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
 import { Config } from "./Configuration";
-import { BilibiliAccountData } from "./interface";
+import { BilibiliAccountData } from "./Service";
 
 export async function apply(ctx: Context, Config: Config)
 {
   ctx.plugin(bilibiliLogin);
+  ctx.plugin(bilibiliVideo)
+  
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);
   const update = new Update(ctx);
   const bilibiliAccount = new BilibiliAccount(ctx);
   let refreshAccountInterval: NodeJS.Timeout | undefined = undefined;
-
+  
   try
   {
     let bilibiliAccountData:BilibiliAccountData[] = await select.select() as unknown as BilibiliAccountData[];
@@ -38,6 +40,10 @@ export async function apply(ctx: Context, Config: Config)
   } catch (error)
   {
     if((error as Error).message === 'cannot create effect on inactive context') {
+      return;
+    }
+    if((error as Error).message === 'fetch failed') {
+      logger.warn((error as Error).message);
       return;
     }
     logger.warn((error as Error));

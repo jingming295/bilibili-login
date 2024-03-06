@@ -32,7 +32,7 @@ Bilibili Login
 
 ## 📝简介
 
-使用cookie来登录b站，登陆后提供b站账号需要用到的SESSDATA，csrf和refresh_token
+扫码登录b站，登陆后提供b站账号需要用到的SESSDATA，csrf和refresh_token
 插件将会定期检查cookie是否需要刷新，如果需要刷新就执行刷新操作并且保存最新的SESSDATA，csrf和refresh_token
 
 ## 👀如何使用

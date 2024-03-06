@@ -15,7 +15,9 @@ export class CreateDatabase{
         refresh_token: 'string',
         SESSDATA: 'string',
         DedeUserID: 'string',
-        DedeUserID__ckMd5: 'string'
+        DedeUserID__ckMd5: 'string',
+        buvid3: 'string',
+        buvid4: 'string'
         
       }, {
         primary: 'id',

@@ -29,10 +29,17 @@ export interface Refresh {
       timestamp: number;
     };
   }
-  
 
+  export interface buvid{
+    code: number;
+    message: string;
+    data: {
+      b_3: string;
+      b_4: string;
+    };
+  }
 
-  interface RefreshCookieData {
+  export interface RefreshCookieData {
     RefreshCookiedata: RefreshCookiedata;
     cookiesObject: CookiesObject;
   }

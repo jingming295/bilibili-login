@@ -1,12 +1,13 @@
 import { Context, Logger } from "koishi";
-import { BiliBiliApi } from "../BiliBiliAPI";
+import { BiliBiliLoginApi } from "../BiliBiliAPI/LoginAPI";
 import { Insert } from "../Database/insert-database";
 import { ErrorHandle } from "../ErrorHandle";
 import { Update } from "../Database/update-database";
 import { Select } from "../Database/select-database";
 import { Config } from "../Configuration";
-import { Refresh, qrLogin } from "../BiliBiliAPI/interface";
-import * as qr from 'qrcode-terminal';
+import { Refresh, qrLogin } from "../BiliBiliAPI/LoginAPI/interface";
+import qrcode from 'qrcode-terminal';
+import { BilibiliAccountData } from "../Database/interface";
 
 export class BilibiliAccount
 {
@@ -20,9 +21,6 @@ export class BilibiliAccount
         this.logger = logger;
         this.errorHandle = new ErrorHandle();
     }
-
-    
-
     /**
      * 初始化
      * @param config 
@@ -37,16 +35,27 @@ export class BilibiliAccount
         }
 
         this.logger.info('登录中，正在初始化。。。');
-        const biliBiliApi = new BiliBiliApi;
+        const select = new Select(this.ctx);
+        const bilibiliAccountDataD = await select.select() as unknown as BilibiliAccountData[];
+        const bilibiliAccountData = bilibiliAccountDataD[0];
+        const biliBiliApi = new BiliBiliLoginApi(bilibiliAccountData);
+        const buvid = await biliBiliApi.getBuvid();
+        if(!buvid) throw new Error('无法获取buvid')
+        const bv_3 = buvid.data.b_3;
+        const bv_4 = buvid.data.b_4;
 
-        let qrCode = await biliBiliApi.getQRCode();
-        let qrLogin:qrLogin;
+        let qrCode = await biliBiliApi.getQRCode(bv_3, bv_4);
+        if (!qrCode) throw new Error('无法获取二维码');
+        let qrLogin
         this.logger.info(`请使用B站APP扫描二维码进行登录`);
-        qr.generate(qrCode.data.url, { small: true });
+        qrcode.generate(qrCode.data.url, { small: true },  (qrcode) => {
+            this.logger.info(`\n${qrcode}`);
+        });
         do
         {
             if(qrCode.code !== 0) throw new Error(`无法验证扫码登录, code:${qrCode.code} message:${qrCode.message}`);
-            qrLogin = await biliBiliApi.QRLogin(qrCode.data.qrcode_key);
+            qrLogin = await biliBiliApi.QRLogin(qrCode.data.qrcode_key, bv_3, bv_4);
+            if (!qrLogin) throw new Error('无法验证登录');
             if (qrLogin.data.code === 0)
             {
                 break;
@@ -57,8 +66,11 @@ export class BilibiliAccount
             else if (qrLogin.data.code === 86038)
             {
                 this.logger.info('二维码已经失效，正在重新获取二维码');
-                qrCode = await biliBiliApi.getQRCode();
-                qr.generate(qrCode.data.url, { small: true });
+                qrCode = await biliBiliApi.getQRCode(bv_3, bv_4);
+                if (!qrCode) throw new Error('无法获取二维码');
+                qrcode.generate(qrCode.data.url, { small: true },  (qrcode) => {
+                    this.logger.info(`\n${qrcode}`);
+                });
             }
             else if (qrLogin.data.code === 86090)
             {
@@ -78,22 +90,25 @@ export class BilibiliAccount
         const bili_jct = parsedCookie.searchParams.get('bili_jct');
         const gourl = parsedCookie.searchParams.get('gourl');
         const refresh_token = qrLogin.data.refresh_token;
-
         if(!DedeUserID || !DedeUserID__ckMd5 || !Expires || !SESSDATA || !bili_jct || !gourl || !refresh_token) throw new Error('无法解析Cookie');
 
         const data = await this.checkAccountStatus(bili_jct, SESSDATA);
         if (data && data.code === 0)
         {
-            this.logger.info('成功登录，正在刷新cookie');
+            this.logger.info('成功登录');
             const insert = new Insert(this.ctx);
-            insert.insertIntoBilibiliAccountData(SESSDATA, bili_jct, refresh_token, DedeUserID, DedeUserID__ckMd5);
+            insert.insertIntoBilibiliAccountData(SESSDATA, bili_jct, refresh_token, DedeUserID, DedeUserID__ckMd5, bv_3, bv_4);
             this.logger.info('cookie保存成功');
         }
     }
 
     public async checkAccountStatus(bili_jct:string, SESSDATA:string){
-        const biliBiliApi = new BiliBiliApi();
-        return await biliBiliApi.checkNeedRefresh(bili_jct, SESSDATA);
+        const select = new Select(this.ctx);
+        const bilibiliAccountDataD = await select.select() as unknown as BilibiliAccountData[];
+        const bilibiliAccountData = bilibiliAccountDataD[0];
+        const biliBiliApi = new BiliBiliLoginApi(bilibiliAccountData);
+        const accountStatus = await biliBiliApi.accountStatusAPI(bili_jct, SESSDATA);
+        return accountStatus
     }
 
     async intervalTask(select: Select, update: Update, Config: Config, refreshAccountInterval: NodeJS.Timeout | undefined)
@@ -137,26 +152,34 @@ export class BilibiliAccount
 
     async getRefreshCookie(refreshData: Refresh, csrf: string, refresh_token: string, SESSDATA: string)
     {
-        const biliBiliApi = new BiliBiliApi();
+        const select = new Select(this.ctx);
+        const bilibiliAccountDataD = await select.select() as unknown as BilibiliAccountData[];
+        const bilibiliAccountData = bilibiliAccountDataD[0];
+        const biliBiliApi = new BiliBiliLoginApi(bilibiliAccountData);
         const timestamp = refreshData.data.timestamp;
         // console.log(`timestamp: ${timestamp}`)
         const correspondPath = await biliBiliApi.GenerateCrorrespondPath(timestamp);
         // console.log(`correspondPath: ${correspondPath}`)
         const refreshCsrf = await biliBiliApi.getrefresh_csfr(correspondPath, SESSDATA);
         // console.log(`refreshCsrf: ${refreshCsrf}`)
+        if (!refreshCsrf) throw new Error('无法获取refreshCsrf');
         const refreshCookie = await biliBiliApi.refreshCookie(csrf, refreshCsrf, refresh_token, SESSDATA);
         // console.log(refreshCookie)
-        await biliBiliApi.confirmRefreshCookie(refreshCookie.cookiesObject.bili_jct, refresh_token, refreshCookie.cookiesObject.SESSDATA);
-        this.logger.info('成功让旧的cookie失效');
+        if (!refreshCookie) throw new Error('无法获取refreshCookie');
+        await biliBiliApi.confirmRefreshCookie(refreshCookie.bili_jct, refresh_token, refreshCookie.SESSDATA);
+        // this.logger.info('成功让旧的cookie失效');
         return refreshCookie;
     }
-
     async DairyCheckRefresh(csrf: string, refresh_token: string, SESSDATA: string)
     {
         this.logger.info("检查cookie是否需要刷新中。。。。。");
         const update = new Update(this.ctx);
-        const biliBiliApi = new BiliBiliApi();
-        const refreshData = await biliBiliApi.checkNeedRefresh(csrf, SESSDATA);
+        const select = new Select(this.ctx);
+        const bilibiliAccountDataD = await select.select() as unknown as BilibiliAccountData[];
+        const bilibiliAccountData = bilibiliAccountDataD[0];
+        const biliBiliApi = new BiliBiliLoginApi(bilibiliAccountData);
+        const refreshData = await biliBiliApi.accountStatusAPI(csrf, SESSDATA);
+        if (!refreshData) throw new Error('无法检测账号是否需要刷新');
         if (refreshData.code !== 0) throw new Error(`无法检测账号是否需要刷新, code:${refreshData.code} message:${refreshData.message}`);
         if (!refreshData.data.refresh)
         {
@@ -165,11 +188,13 @@ export class BilibiliAccount
         if (refreshData && refreshData.data.refresh === true)
         {
             this.logger.info('检测到需要刷新cookie');
+            const buvid = await biliBiliApi.getBuvid();
+            if (!buvid) throw new Error('无法获取buvid');
+            const bv_3 = buvid.data.b_3;
+            const bv_4 = buvid.data.b_4;
             const refreshCookie = await this.getRefreshCookie(refreshData, csrf, refresh_token, SESSDATA);
-            update.setBilibiliAccountData(refreshCookie.cookiesObject.SESSDATA, refreshCookie.cookiesObject.bili_jct, refreshCookie.responseData.data.refresh_token, refreshCookie.cookiesObject.DedeUserID, refreshCookie.cookiesObject.DedeUserID__ckMd5, refreshCookie.cookiesObject.sid);
+            update.setBilibiliAccountData(refreshCookie.SESSDATA, refreshCookie.bili_jct, refreshCookie.refresh_token, refreshCookie.DedeUserID, refreshCookie.DedeUserID__ckMd5, bv_3, bv_4);
             this.logger.info('cookie已刷新，并且保存成功');
         }
-
-
     }
 }
