@@ -12,7 +12,7 @@ export interface BVideoDetail
 /**
  * BVideoDetail下的data
  */
-interface VideoData
+export interface VideoData
 {
   bvid: string;
   aid: number;
@@ -32,6 +32,8 @@ interface VideoData
   }[];
   state: number;
   duration: number;
+  mission_id: number;
+  season_type: number;
   rights: rights;
   owner: {
     mid: number;
@@ -103,6 +105,12 @@ interface VideoData
   like_icon: string;
   need_jump_bv: boolean;
   disable_show_up_info: boolean;
+  ai_rcmd:{
+    id: number;
+    goto: string;
+    trackid: string;
+    uniq_id: string;
+  }
 }
 
 /**

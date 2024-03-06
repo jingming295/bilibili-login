@@ -5,13 +5,17 @@ import { bilibiliLogin, bilibiliVideo } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
 import { Config } from "./Configuration";
-import { BilibiliAccountData } from "./Service";
+import { BilibiliAccountData } from "../";
 
 export async function apply(ctx: Context, Config: Config)
 {
   ctx.plugin(bilibiliLogin);
-  ctx.plugin(bilibiliVideo)
-  
+  ctx.plugin(bilibiliVideo);
+  // const b = ctx.bilibiliVideo
+  // let x 
+  // // x = await b.getRecommendShortVideo()
+  // console.log(x);
+
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);
   const update = new Update(ctx);

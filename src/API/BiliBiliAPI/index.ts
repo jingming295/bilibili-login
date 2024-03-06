@@ -11,10 +11,6 @@ export class sendFetch {
     public async sendGet(url: string, params: URLSearchParams, headers: Headers){
         const fullUrl = `${url}?${params.toString()}`;
         if(!params.get('csrf') && this.BilibiliAccountData) params.set('csrf', this.BilibiliAccountData.csrf)
-        if(this.BilibiliAccountData){
-            params.set('buvid3', this.BilibiliAccountData.buvid3)
-            params.set('buvid4', this.BilibiliAccountData.buvid4)
-        }
         const response = await fetch(fullUrl, {
             method: 'GET',
             headers: headers
@@ -25,10 +21,6 @@ export class sendFetch {
 
     public async sendPost(url: string, params: URLSearchParams, headers: Headers){
         if(!params.get('csrf') && this.BilibiliAccountData) params.set('csrf', this.BilibiliAccountData.csrf)
-        if(this.BilibiliAccountData){
-            params.set('buvid3', this.BilibiliAccountData.buvid3)
-            params.set('buvid4', this.BilibiliAccountData.buvid4)
-        }
         const response = await fetch(url, {
             method: 'POST',
             headers: headers,
