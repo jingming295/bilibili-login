@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bilibili-login",
-  "description": "提供自动刷新cookie以提供最新的SESSDATA，csrf和refresh_token",
-  "version": "0.1.28",
+  "description": "Bilibili API 服务，目前提供三个服务：BiliBiliLogin,  BiliBiliVideo, BiliBiliAnime",
+  "version": "0.1.29",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -19,12 +19,14 @@
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
+    "@types/md5": "^2",
     "@types/qrcode-terminal": "^0.12.2"
   },
   "dependencies": {
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
     "jsdom": "^22.1.0",
+    "md5": "^2.3.0",
     "qrcode-terminal": "^0.12.0"
   }
 }

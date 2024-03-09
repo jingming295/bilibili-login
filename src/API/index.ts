@@ -1,7 +1,7 @@
 import { Context, Logger } from "koishi";
 import { Select } from "./Database/select-database";
 import { BilibiliAccount } from "./BilibiliAccount";
-import { bilibiliLogin, bilibiliVideo } from "./Service";
+import { BiliBiliAnime, BiliBiliLogin, BiliBiliVideo } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
 import { Config } from "./Configuration";
@@ -9,11 +9,22 @@ import { BilibiliAccountData } from "../";
 
 export async function apply(ctx: Context, Config: Config)
 {
-  ctx.plugin(bilibiliLogin);
-  ctx.plugin(bilibiliVideo);
-  // const b = ctx.bilibiliVideo
+  ctx.plugin(BiliBiliLogin);
+  ctx.plugin(BiliBiliVideo);
+  ctx.plugin(BiliBiliAnime)
+
   // let x 
-  // // x = await b.getRecommendShortVideo()
+
+
+  // const bl = ctx.bilibiliLogin
+  // x = await bl.getNavUserData()
+
+  // const bv = ctx.BiliBiliVideo
+  // x = await bv.getBilibiliVideoStream(834398004, null, 1359369314, 112, 'html', 16)
+
+  // const ba = ctx.BiliBiliAnime
+  // x = await ba.getAnimeStream(63292297, null, 278373, 129528925, 80, 4048)
+  
   // console.log(x);
 
   const logger = new Logger('bilibili-login');
@@ -25,6 +36,7 @@ export async function apply(ctx: Context, Config: Config)
   try
   {
     let bilibiliAccountData:BilibiliAccountData[] = await select.select() as unknown as BilibiliAccountData[];
+
     // 如果发现数据库中没有Cookie信息，就执行初始化
     if (bilibiliAccountData.length !== 1)
     {
@@ -55,7 +67,7 @@ export async function apply(ctx: Context, Config: Config)
     if (bilibiliAccountData.length === 1)
     {
       update.deleteBilibiliAccountData();
-    }
+    } 
     logger.warn(
       `抱歉，我们遇到了一些问题，具体是：${(error as Error).message}。
       \n这导致数据库中的数据发生错误。为了解决这个问题，我们已经自动删除了相关数据，并取消了自动任务。
@@ -67,4 +79,3 @@ export async function apply(ctx: Context, Config: Config)
     clearInterval(refreshAccountInterval);
   }
 }
-

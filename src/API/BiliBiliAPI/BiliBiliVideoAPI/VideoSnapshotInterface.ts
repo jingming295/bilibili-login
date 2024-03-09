@@ -2,7 +2,7 @@ export interface Snapshot{
     code: number;
     message: string;
     ttl: number;
-    data: SnapshotData | undefined;
+    data?: SnapshotData;
 }
 interface SnapshotData{
     pvdata: string; //bin格式截取时间表url	

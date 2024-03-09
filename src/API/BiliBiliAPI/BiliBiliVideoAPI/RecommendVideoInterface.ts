@@ -5,7 +5,7 @@ export interface RecommandVideo
     code: number;
     message: string;
     ttl: number;
-    data: VideoData[] | undefined;
+    data?: VideoData[];
 }
 
 export interface RecommendVideoFromMainPage
@@ -13,7 +13,7 @@ export interface RecommendVideoFromMainPage
     code: number;
     message: string;
     ttl: number;
-    data: {
+    data?: {
         item: {
             id: number;
             bv_id: string;
@@ -109,7 +109,7 @@ export interface RecommendVideoFromMainPage
         preload_expose_pct: number;
         preload_floor_expose_pct: number;
         mid: number;
-    } | undefined;
+    };
 
 }
 
@@ -118,7 +118,7 @@ export interface RecommentShortVideo
     code: number;
     message: string;
     ttl: number;
-    data: {
+    data?: {
         items: {
             card_type: string;
             card_goto: string;
@@ -160,11 +160,11 @@ export interface RecommentShortVideo
                 title: string;
                 type: string;
                 icon: string;
-                reasons: {
+                reasons?: {
                     id: number;
                     name: string;
                     toast: string;
-                }|undefined;
+                };
             }[];
             talk_back: string;
             report_flow_data: string;
@@ -211,6 +211,6 @@ export interface RecommentShortVideo
         };
         interest_choose: null;
 
-    }|undefined;
+    };
 
 } 

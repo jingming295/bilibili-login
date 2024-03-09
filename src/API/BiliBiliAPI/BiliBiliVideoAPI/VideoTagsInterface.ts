@@ -3,7 +3,7 @@ export interface VideoTags
     code: 0 | -400 | number;
     message: string;
     ttl: number;
-    data: TagList[] | undefined;
+    data?: TagList[];
 }
 
 interface TagList

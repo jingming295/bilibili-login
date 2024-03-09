@@ -1,5 +1,5 @@
 import { Logger } from "koishi";
-import { BilibiliAccountData, bilibiliLogin } from "../Service";
+import { BilibiliAccountData } from "../Service";
 
 export class sendFetch {
     public logger:Logger = new Logger('bilibili-login');
@@ -15,7 +15,6 @@ export class sendFetch {
             method: 'GET',
             headers: headers
         });
-    
         return response;
     }
 
@@ -33,9 +32,12 @@ export class sendFetch {
     protected returnBilibiliHeaders(biliBiliSessData: string | null = null){
         const headers = new Headers();
         if(biliBiliSessData){
-            headers.set('Cookie', `SESSDATA=${biliBiliSessData}; buvid3=${this.BilibiliAccountData?.buvid3}; buvid4=${this.BilibiliAccountData?.buvid4};`);
+            headers.set(
+                'Cookie', 
+                `SESSDATA=${biliBiliSessData};buvid3=${this.BilibiliAccountData?.buvid3};buvid4=${this.BilibiliAccountData?.buvid4};DedeUserID=${this.BilibiliAccountData?.DedeUserID};DedeUserID__ckMd5=${this.BilibiliAccountData?.DedeUserID__ckMd5};bili_jct=${this.BilibiliAccountData?.csrf}`
+                );
         } 
-        else if(this.BilibiliAccountData) headers.set('Cookie', `SESSDATA=${this.BilibiliAccountData?.SESSDATA};`);
+        else if(this.BilibiliAccountData) headers.set('Cookie', `SESSDATA=${this.BilibiliAccountData.SESSDATA}; buvid3=${this.BilibiliAccountData?.buvid3}; buvid4=${this.BilibiliAccountData?.buvid4};`);
         headers.set('referer', 'https://www.bilibili.com');
         headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
         return headers;
