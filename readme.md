@@ -1,12 +1,5 @@
 # koishi-plugin-bilibili-login
 
-[![npm](https://img.shields.io/npm/v/koishi-plugin-bilibili-login?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-bilibili-login)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login?ref=badge_shield)
-
-Bilibili Login
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -19,12 +12,13 @@ Bilibili Login
 <h3 align="center">koishi-plugin-bilibili-login</h3>
 
   <p align="center">
-    B站登录
+    B站API
   </p>
 </div>
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-bilibili-login?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-bilibili-login)
 [![CodeFactor](https://www.codefactor.io/repository/github/jingming295/bilibili-login/badge)](https://www.codefactor.io/repository/github/jingming295/bilibili-login)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login?ref=badge_shield)
 
 # 🎉bilibili-login
 
