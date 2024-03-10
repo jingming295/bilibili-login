@@ -20,7 +20,7 @@ export async function apply(ctx: Context, Config: Config)
   // x = await bl.getNavUserData()
 
   // const bv = ctx.BiliBiliVideo
-  // x = await bv.getBilibiliVideoStream(834398004, null, 1359369314, 112, 'html', 16)
+  // x = await bv.likeTag(89772773, 12620189)
 
   // const ba = ctx.BiliBiliAnime
   // x = await ba.getAnimeStream(63292297, null, 278373, 129528925, 80, 4048)

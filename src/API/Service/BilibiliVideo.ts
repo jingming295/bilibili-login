@@ -110,16 +110,16 @@ export class BiliBiliVideo extends Service
    * 获取Bilibili视频的快照
    * 
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/snapshot.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
-   * @param {string | null} cid 视频的cid（可选，用于分p的视频，默认为null）
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
+   * @param {string | null = null} cid 视频的cid（可选，用于分p的视频，默认为null）
    * @param {0 | 1} index 是否需要json数组截取时间表：1(需要), 0(不需要，默认为0)
    * @returns {Promise<Snapshot | null>} 返回视频的快照信息，或者返回null
    */
   async getBilibiliVideoSnapshot(
-    aid: number | '' = '',
-    bvid: string = '',
-    cid: string = '',
+    aid: number | null = null,
+    bvid: string | null = null,
+    cid: string | null = null,
     index: 0 | 1 = 0
   ): Promise<Snapshot | null>
   {
@@ -133,12 +133,12 @@ export class BiliBiliVideo extends Service
    * 执行点赞或点踩操作
    * 
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/action.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @param {1|2|3|4} like 操作类型：1(点赞), 2(取消点赞), 3(点踩), 4(取消点踩)
    * @returns {Promise<LikeVideo | null>} 返回点赞或点踩的结果信息，或者返回null
    */
-  async performLikeOrDislike(aid: number | '' = '', bvid: string = '', like: 1 | 2 | 3 | 4): Promise<LikeVideo | null>
+  async performLikeAndDislike(aid: number | null = null, bvid: string | null = null, like: 1 | 2 | 3 | 4): Promise<LikeVideo | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -152,23 +152,23 @@ export class BiliBiliVideo extends Service
    * @param {number | ''} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<hasLiked | null>} 如果已经点赞或点踩返回对应信息，否则返回null
    */
-  async checkIsLikedOrUnlike(aid: number | '' = '', bvid: string = ''): Promise<hasLiked | null>
+  async checkIsLikedAndUnliked(aid: number | null = null, bvid: string | null = null): Promise<hasLiked | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
-    return await bilibiliVideoAPI.checkIsLiked(aid, bvid);
+    return await bilibiliVideoAPI.checkIsLikedAndUnliked(aid, bvid);
   }
 
   /**
    * 投币视频
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/action.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @param {1|2} multiply 投币数量：1(1枚), 2(2枚)
    * @param {0|1} select_like 是否同时点赞：0(否), 1(是)
    * @returns {Promise<AddCoin | null>} 返回投币的结果信息
    */
-  async addCoin(aid: number | '' = '', bvid: string = '', multiply: 1 | 2, select_like: 0 | 1): Promise<AddCoin | null>
+  async addCoin(aid: number | null = null, bvid: string | null = null, multiply: 1 | 2, select_like: 0 | 1): Promise<AddCoin | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -182,7 +182,7 @@ export class BiliBiliVideo extends Service
    * @param {string | ''} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<isAddedCoin | null>} 返回查询的结果信息
    */
-  async checkIsAddedCoin(aid: number | '' = '', bvid: string = ''): Promise<isAddedCoin | null>
+  async checkIsAddedCoin(aid: number | null = null, bvid: string | null = null): Promise<isAddedCoin | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -220,11 +220,11 @@ export class BiliBiliVideo extends Service
   /**
    * 一键三连视频，同时点赞投币收藏视频，收藏于默认收藏夹中
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/action.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<likeTriple | null>} 返回一键三连的结果信息
    */
-  async likeTriple(aid: number | '' = '', bvid: string = ''): Promise<likeTriple | null>
+  async likeTriple(aid: number | null = null, bvid: string | null = null): Promise<likeTriple | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -234,11 +234,11 @@ export class BiliBiliVideo extends Service
   /**
    * 分享视频(仅仅为了增加那个分享数)
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/action.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<ShareVideo | null>} 返回分享的结果信息
    */
-  async shareVideo(aid: number | '' = '', bvid: string = ''): Promise<ShareVideo | null>
+  async shareVideo(aid: number | null = null, bvid: string | null = null): Promise<ShareVideo | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -248,11 +248,11 @@ export class BiliBiliVideo extends Service
   /**
    * 获取视频的标签信息
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/tags.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<VideoTags | null>} 返回视频的标签信息
    */
-  async getVideoTags(aid: number | '' = '', bvid: string = ''): Promise<VideoTags | null>
+  async getVideoTags(aid: number | null = null, bvid: string | null = null): Promise<VideoTags | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -271,7 +271,7 @@ export class BiliBiliVideo extends Service
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
-    return await bilibiliVideoAPI.likeTag(aid, tag_id);
+    return await bilibiliVideoAPI.likeTag(aid, tag_id, this.ctx);
   }
 
   /**
@@ -292,11 +292,11 @@ export class BiliBiliVideo extends Service
   /**
    * 根据视频获取推荐视频列表, 最多40个
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/recommend.md}
-   * @param {number | ''} aid 必要 (aid和bvid二选一)
-   * @param {string | ''} bvid 必要 (aid和bvid二选一)
+   * @param {number | null = null} aid 必要 (aid和bvid二选一)
+   * @param {string | null = null} bvid 必要 (aid和bvid二选一)
    * @returns {Promise<RecommandVideo | null>}
    */
-  async getRecommandVideoFromSingleVideo(aid: number | '' = '', bvid: string = ''): Promise<RecommandVideo | null>
+  async getRecommandVideoFromSingleVideo(aid: number | null = null, bvid: string | null = null): Promise<RecommandVideo | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -361,10 +361,10 @@ export class BiliBiliVideo extends Service
    */
   async getInteractiveVideoDetail
     (
-      aid: number | '' = '',
-      bvid: string = '',
+      aid: number | null = null,
+      bvid: string | null = null,
       graph_version: number,
-      edge_id: number | '' = ''
+      edge_id: number | null = null
     ): Promise<interactVideoDetail | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
@@ -381,7 +381,7 @@ export class BiliBiliVideo extends Service
    * @param bvid 非必要
    * @returns {Promise<HighEnergyBar | null>} 返回弹幕趋势顶点列表
    */
-  async getHighEnergyBarList(cid: number, aid: number | '' = '', bvid: string = ''): Promise<HighEnergyBar | null>
+  async getHighEnergyBarList(cid: number, aid: number | null = null, bvid: string | null = null): Promise<HighEnergyBar | null>
   {
     const bilibiliAccountData = await this.getBilibiliAccountData();
     const bilibiliVideoAPI = new BiliBiliVideoApi(bilibiliAccountData);
@@ -427,8 +427,8 @@ export class BiliBiliVideo extends Service
   async postHeartbeat
     (
       aid: number | null = null,
-      bvid: string = '',
-      cid: number | '' = '',
+      bvid: string | null = null,
+      cid: number | null = null,
       epid: number | null = null,
       sid: number | null = null,
       mid: number | null = null,
@@ -483,7 +483,7 @@ export class BiliBiliVideo extends Service
   }
 
   /**
-   * 点赞或者取消点赞AI摘要
+   * 点赞，取消点赞，点踩，取消点踩AI摘要
    * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/summary.md}
    * @param aid 必要 (aid和bvid二选一)
    * @param bvid 必要 (aid和bvid二选一)

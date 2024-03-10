@@ -163,14 +163,14 @@ export class BiliBiliVideoApi extends sendFetch
      * @param index 
      * @returns 
      */
-    public async getBilibiliVideoSnapshot(aid: number | '' = '', bvid: string = '', cid: string | null = null, index: 1 | 0 = 0)
+    public async getBilibiliVideoSnapshot(aid: number | null = null, bvid: string | null = null, cid: string | null = null, index: 1 | 0 = 0)
     {
         const url = 'https://api.bilibili.com/x/player/videoshot';
-        const params = new URLSearchParams({
-            bvid: bvid,
-            aid: aid.toString(),
-            index: index.toString()
-        });
+        const params = new URLSearchParams();
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
+        cid && params.set('cid', cid);
+        params.set('index', index.toString());
 
         if (cid) params.set('cid', cid);
 
@@ -196,16 +196,17 @@ export class BiliBiliVideoApi extends sendFetch
      * @param like 1: 点赞 2: 取消点赞, 3: 点踩, 4: 取消点踩
      * @returns 
      */
-    public async likeOrDislikeBilibiliVideo(aid: number | '' = '', bvid: string = '', like: 1 | 2 | 3 | 4)
+    public async likeOrDislikeBilibiliVideo(aid: number | null = null, bvid: string | null = null, like: 1 | 2 | 3 | 4)
     {
         const url = 'https://api.bilibili.com/x/web-interface/archive/like';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
             like: like.toString(),
             csrf: this.BilibiliAccountData?.csrf || '',
             source: 'web_normal'
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -230,13 +231,12 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async checkIsLiked(aid: number | '' = '', bvid: string = ''): Promise<hasLiked | null>
+    public async checkIsLikedAndUnliked(aid: number | null = null, bvid: string | null = null): Promise<hasLiked | null>
     {
         const url = 'https://api.bilibili.com/x/web-interface/archive/has/like';
-        const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid
-        });
+        const params = new URLSearchParams();
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -261,18 +261,19 @@ export class BiliBiliVideoApi extends sendFetch
      * @param select_like 
      * @returns 
      */
-    public async addCoin(aid: number | '' = '', bvid: string = '', multilpy: 1 | 2, select_like: 0 | 1)
+    public async addCoin(aid: number | null = null, bvid: string | null = null, multilpy: 1 | 2, select_like: 0 | 1)
     {
         const url = 'https://api.bilibili.com/x/web-interface/coin/add';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
             multiply: multilpy.toString(),
             select_like: select_like.toString(),
             source: 'web_normal',
             eab_x: '2', // 必要，不然无法执行投币但不点赞的操作
             csrf: this.BilibiliAccountData?.csrf || '',
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -297,13 +298,12 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async checkIsAddedCoin(aid: number | '' = '', bvid: string = '')
+    public async checkIsAddedCoin(aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://api.bilibili.com/x/web-interface/archive/coins';
-        const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
-        });
+        const params = new URLSearchParams();
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -389,14 +389,15 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async archiveLikeTriple(aid: number | '' = '', bvid: string = '')
+    public async archiveLikeTriple(aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://api.bilibili.com/x/web-interface/archive/like/triple';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
             csrf: this.BilibiliAccountData?.csrf || ''
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -421,14 +422,15 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async shareVideo(aid: number | '' = '', bvid: string = '')
+    public async shareVideo(aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://api.bilibili.com/x/web-interface/share/add';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
             csrf: this.BilibiliAccountData?.csrf || ''
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -453,14 +455,12 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async getVideoTags(aid: number | '' = '', bvid: string = '')
+    public async getVideoTags(aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://api.bilibili.com/x/tag/archive/tags';
-        const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid
-        });
-
+        const params = new URLSearchParams();
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
         const headers = this.returnBilibiliHeaders();
 
         const response = await this.sendGet(url, params, headers);
@@ -482,7 +482,7 @@ export class BiliBiliVideoApi extends sendFetch
      * @param tag_id 
      * @returns 
      */
-    public async likeTag(aid: number, tag_id: number)
+    public async likeTag(aid: number, tag_id: number, ctx:Context)
     {
         const url = 'https://api.bilibili.com/x/tag/archive/like2';
         const params = new URLSearchParams({
@@ -490,6 +490,12 @@ export class BiliBiliVideoApi extends sendFetch
             tag_id: tag_id.toString(),
             csrf: this.BilibiliAccountData?.csrf || ''
         });
+
+        const wbi = new WBI(ctx);
+        const { w_rid, wts } = await wbi.main(params);
+
+        w_rid && params.set('w_rid', w_rid);
+        wts && params.set('wts', wts.toString());
 
         const headers = this.returnBilibiliHeaders();
 
@@ -546,13 +552,13 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async getRecommandVideoFromSingleVideo(aid: number | '' = '', bvid: string = '')
+    public async getRecommandVideoFromSingleVideo(aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://api.bilibili.com/x/web-interface/archive/related';
-        const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid
-        });
+        const params = new URLSearchParams();
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -656,19 +662,20 @@ export class BiliBiliVideoApi extends sendFetch
      */
     public async getInteractiveVideoDetail
         (
-            aid: number | '' = '',
-            bvid: string = '',
+            aid: number | null = null,
+            bvid: string | null = null,
             graph_version: number,
-            edge_id: number | '' = ''
+            edge_id: number | null = null
         )
     {
         const url = 'https://api.bilibili.com/x/stein/edgeinfo_v2';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
-            graph_version: graph_version.toString(),
-            edge_id: edge_id.toString()
+            graph_version: graph_version.toString()
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
+        edge_id && params.set('edge_id', edge_id.toString());
 
         const headers = this.returnBilibiliHeaders();
 
@@ -693,14 +700,15 @@ export class BiliBiliVideoApi extends sendFetch
      * @param bvid 
      * @returns 
      */
-    public async getHighEnergyBarList(cid: number, aid: number | '' = '', bvid: string = '')
+    public async getHighEnergyBarList(cid: number, aid: number | null = null, bvid: string | null = null)
     {
         const url = 'https://bvc.bilivideo.com/pbp/data';
         const params = new URLSearchParams({
-            aid: aid.toString(),
-            bvid: bvid,
             cid: cid.toString()
         });
+
+        aid && params.set('aid', aid.toString());
+        bvid && params.set('bvid', bvid);
 
         const headers = this.returnBilibiliHeaders();
 
@@ -772,8 +780,8 @@ export class BiliBiliVideoApi extends sendFetch
     public async postHeartbeat
         (
             aid: number | null = null,
-            bvid: string = '',
-            cid: number | '' = '',
+            bvid: string | null = null,
+            cid: number | null = null,
             epid: number | null = null,
             sid: number | null = null,
             mid: number | null = null,

@@ -26,8 +26,7 @@
 
 ## 📝简介
 
-扫码登录b站，登陆后提供b站账号需要用到的SESSDATA，csrf和refresh_token
-插件将会定期检查cookie是否需要刷新，如果需要刷新就执行刷新操作并且保存最新的SESSDATA，csrf和refresh_token
+可以扫码登录b站。一开始只是想做登录功能罢了，但是我决定添加更多东西！
 
 ## 👀如何使用
 ### 目前我提供了三个services，可以办到很多事情。具体可以参考 [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
@@ -54,6 +53,9 @@ export async function apply(ctx: Context)
 }
 ```
 
+## ✋🏻免责声明
+
+### 本插件仅供学习，用户做的任何事情与我无关，请在下载24小时候删除本插件。
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjingming295%2Fbilibili-login?ref=badge_large)
