@@ -13,13 +13,13 @@ export async function apply(ctx: Context, Config: Config)
   ctx.plugin(BiliBiliMovie)
   ctx.plugin(BiliBiliSearch)
 
-  // let x 
+  let x 
 
   // const bl = ctx.bilibiliLogin
   // x = await bl.getNavUserData()
 
   // const bv = ctx.BiliBiliVideo
-  // x = await bv.getRecommendVideoFromMainPage()
+  // x = await bv.getBilibiliVideoDetail(76566179, 'BV11J411R7H5')
 
   // const ba = ctx.BiliBiliAnime
   // x = await ba.getAnimeStream(63292297, null, 278373, 129528925, 80, 4048)
@@ -27,7 +27,7 @@ export async function apply(ctx: Context, Config: Config)
   // const bs = ctx.BiliBiliSearch
   // x = await bs.getSearchRequestByArticle('1', 1)
 
-  // console.log(x?.data?.item[0]);
+  console.log(x);
 
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);

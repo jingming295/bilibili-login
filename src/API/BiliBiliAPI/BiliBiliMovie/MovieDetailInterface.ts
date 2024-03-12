@@ -1,4 +1,4 @@
-export interface AnimeDetailEPSS
+export interface MovieDetailEPSS
 {
   code: number;
   message: string;
@@ -17,7 +17,7 @@ export interface AnimeDetailEPSS
     bkg_cover: string;
     cover: string;
     enable_vt: boolean;
-    episodes: AnimeDetail_Episodes[];
+    episodes: MovieDetail_Episodes[];
     evaluate: string;
     freya: {
       bubble_desc: string;
@@ -97,8 +97,8 @@ export interface AnimeDetailEPSS
     };
     season_id: number;
     season_title: string;
-    seasons: AnimeDetail_Season[];
-    section: AnimeDetail_Section[];
+    seasons: MovieDetail_Season[];
+    section: MovieDetail_Section[];
     series: {
       display_type: number;
       series_id: number;
@@ -179,7 +179,7 @@ export interface AnimeDetailEPSS
   };
 }
 
-interface AnimeDetail_Season
+interface MovieDetail_Season
 {
   badge: string;
   badge_info: {
@@ -213,12 +213,12 @@ interface AnimeDetail_Season
   };
 }
 
-interface AnimeDetail_Section
+interface MovieDetail_Section
 {
   attr: number;
   episode_id: number;
   episode_ids: number[];
-  episodes: AnimeDetail_Episodes[];
+  episodes: MovieDetail_Episodes[];
   id: number;
   title: string;
   type: number;
@@ -232,7 +232,7 @@ interface AnimeDetail_Section
   };
 }
 
-interface AnimeDetail_Episodes
+interface MovieDetail_Episodes
 {
   aid: number;
   badge: string;
@@ -277,7 +277,7 @@ interface AnimeDetail_Episodes
   vid: string;
 }
 
-export interface AnimeDetailMDID
+export interface MovieDetailMDID
 {
   code: number;
   message: string;
@@ -308,7 +308,7 @@ export interface AnimeDetailMDID
   };
 }
 
-export interface AnimeSeasonSection
+export interface MovieSeasonSection
 {
   code: number;
   message: string;

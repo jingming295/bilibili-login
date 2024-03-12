@@ -1,11 +1,11 @@
 import { sendFetch } from "..";
-import { AnimeDetailEPSS, AnimeDetailMDID, AnimeSeasonSection } from "./MovieDetailInterface";
-import { AnimeStreamFormat } from "./MovieStreamInterface";
+import { MovieDetailEPSS, MovieDetailMDID, MovieSeasonSection } from "./MovieDetailInterface";
+import { MovieStreamFormat } from "./MovieStreamInterface";
 
 
-export class BiliBiliAnimeApi extends sendFetch
+export class BiliBiliMovieApi extends sendFetch
 {
-    public async getAnimeDetailMDID(media_id: string)
+    public async getMovieDetailMDID(media_id: string)
     {
         const url = 'https://api.bilibili.com/pgc/review/user';
         const params = new URLSearchParams({
@@ -15,11 +15,11 @@ export class BiliBiliAnimeApi extends sendFetch
         const response = await this.sendGet(url, params, headers);
         if (response.ok)
         {
-            const data: AnimeDetailMDID = await response.json();
+            const data: MovieDetailMDID = await response.json();
             return data;
         } else
         {
-            this.logger.warn(`getAnimeDetailMDID: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getMovieDetailMDID: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -30,11 +30,11 @@ export class BiliBiliAnimeApi extends sendFetch
      * @param ep_id bilibili ep_id
      * @returns 
      */
-    public async getAnimeDetailEPSS
+    public async getMovieDetailEPSS
         (
             season_id: number | null = null,
             ep_id: number | null = null,
-        ): Promise<AnimeDetailEPSS | null>
+        ): Promise<MovieDetailEPSS | null>
     {
         const url = 'https://api.bilibili.com/pgc/view/web/season';
         const params = new URLSearchParams();
@@ -48,16 +48,16 @@ export class BiliBiliAnimeApi extends sendFetch
 
         if (response.ok)
         {
-            const data: AnimeDetailEPSS = await response.json();
+            const data: MovieDetailEPSS = await response.json();
             return data;
         } else
         {
-            this.logger.warn(`getAnimeDetailEPSS: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getMovieDetailEPSS: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
 
-    public async getAnimeSeasonSection(season_id: number)
+    public async getMovieSeasonSection(season_id: number)
     {
         const url = 'https://api.bilibili.com/pgc/web/season/section';
         const params = new URLSearchParams({
@@ -67,11 +67,11 @@ export class BiliBiliAnimeApi extends sendFetch
         const response = await this.sendGet(url, params, headers);
         if (response.ok)
         {
-            const data: AnimeSeasonSection = await response.json();
+            const data: MovieSeasonSection = await response.json();
             return data;
         } else
         {
-            this.logger.warn(`getAnimeSeasonSection: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getMovieSeasonSection: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -83,7 +83,7 @@ export class BiliBiliAnimeApi extends sendFetch
      * @param biliBiliqn BiliBiliqn
      * @returns 
      */
-    public async getAnimeStream
+    public async getMovieStream
         (
             avid: number | null = null,
             bvid: number | null = null,
@@ -119,16 +119,16 @@ export class BiliBiliAnimeApi extends sendFetch
 
         if (response.ok)
         {
-            const data: AnimeStreamFormat = await response.json();
+            const data: MovieStreamFormat = await response.json();
             return data;
         } else
         {
-            this.logger.warn(`getAnimeStream: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getMovieStream: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
 
-    public async getAnimeStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string)
+    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string)
     {
         const url = remoteUrl + '/GetBiliBiliBangumiStream';
         const params = new URLSearchParams({
@@ -145,11 +145,11 @@ export class BiliBiliAnimeApi extends sendFetch
 
         if (response.ok)
         {
-            const data: AnimeStreamFormat = await response.json();
+            const data: MovieStreamFormat = await response.json();
             return data;
         } else
         {
-            this.logger.warn(`getAnimeStreamFromFunctionCompute: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getMovieStreamFromFunctionCompute: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }

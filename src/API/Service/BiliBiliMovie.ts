@@ -1,7 +1,7 @@
 import { Context, Service } from "koishi";
-import { AnimeDetailEPSS, AnimeDetailMDID, AnimeSeasonSection, AnimeStreamFormat, BilibiliAccountData } from "../..";
+import { MovieDetailEPSS, MovieDetailMDID, MovieSeasonSection, MovieStreamFormat, BilibiliAccountData } from "../..";
 import { Select } from "../Database/select-database";
-import { BiliBiliAnimeApi } from "../BiliBiliAPI/BiliBiliMovie";
+import { BiliBiliMovieApi } from "../BiliBiliAPI/BiliBiliMovie";
 
 export * from '../BiliBiliAPI/BiliBiliMovie/MovieStreamInterface';
 export * from '../BiliBiliAPI/BiliBiliMovie/MovieDetailInterface';
@@ -26,13 +26,13 @@ export class BiliBiliMovie extends Service
      * 获取剧集明细（web端）（mdid方式）
      * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/info.md}
      * @param media_id 必要，剧集mdid
-     * @returns {Promise<AnimeDetailMDID | null>}
+     * @returns {Promise<MovieDetailMDID | null>}
      */
-    public async getAnimeDetailMDID(media_id: string): Promise<AnimeDetailMDID | null>
+    public async getMovieDetailMDID(media_id: string): Promise<MovieDetailMDID | null>
     {
         const bilibiliAccountData = await this.getBilibiliAccountData();
-        const bilibiliAnimeAPI = new BiliBiliAnimeApi(bilibiliAccountData);
-        return bilibiliAnimeAPI.getAnimeDetailMDID(media_id);
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieDetailMDID(media_id);
     }
 
     /**
@@ -42,28 +42,28 @@ export class BiliBiliMovie extends Service
      * @param ep_id  必要 (season_id 和 ep_id 二选一)
      * @returns 
      */
-    public async getAnimeDetailEPSS
+    public async getMovieDetailEPSS
         (
             season_id: number | null = null,
             ep_id: number | null = null,
-        ): Promise<AnimeDetailEPSS | null>
+        ): Promise<MovieDetailEPSS | null>
     {
         const bilibiliAccountData = await this.getBilibiliAccountData();
-        const bilibiliAnimeAPI = new BiliBiliAnimeApi(bilibiliAccountData);
-        return bilibiliAnimeAPI.getAnimeDetailEPSS(season_id, ep_id);
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieDetailEPSS(season_id, ep_id);
     }
 
     /**
      * 获取剧集分集信息
      * @see{@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/info.md}
      * @param season_id 必要，剧集ssid
-     * @returns {Promise<AnimeSeasonSection | null>}
+     * @returns {Promise<MovieSeasonSection | null>}
      */
-    public async getAnimeSeasonSection(season_id: number): Promise<AnimeSeasonSection | null>
+    public async getMovieSeasonSection(season_id: number): Promise<MovieSeasonSection | null>
     {
         const bilibiliAccountData = await this.getBilibiliAccountData();
-        const bilibiliAnimeAPI = new BiliBiliAnimeApi(bilibiliAccountData);
-        return bilibiliAnimeAPI.getAnimeSeasonSection(season_id);
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieSeasonSection(season_id);
     }
 
     /**
@@ -76,7 +76,7 @@ export class BiliBiliMovie extends Service
      * @param fnval 
      * @returns 
      */
-    public async getAnimeStream
+    public async getMovieStream
         (
             avid: number | null = null,
             bvid: number | null = null,
@@ -84,11 +84,11 @@ export class BiliBiliMovie extends Service
             cid: number | null = null,
             qn: number,
             fnval: number = 1
-        ) : Promise<AnimeStreamFormat | null>
+        ) : Promise<MovieStreamFormat | null>
     {
         const bilibiliAccountData = await this.getBilibiliAccountData();
-        const bilibiliAnimeAPI = new BiliBiliAnimeApi(bilibiliAccountData);
-        return bilibiliAnimeAPI.getAnimeStream(avid, bvid, ep_id, cid, qn, fnval);
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieStream(avid, bvid, ep_id, cid, qn, fnval);
     }
 
     /**
@@ -100,10 +100,10 @@ export class BiliBiliMovie extends Service
      * @param remoteUrl 
      * @returns 
      */
-    public async getAnimeStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string): Promise<AnimeStreamFormat | null>{
+    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string): Promise<MovieStreamFormat | null>{
         const bilibiliAccountData = await this.getBilibiliAccountData();
-        const bilibiliAnimeAPI = new BiliBiliAnimeApi(bilibiliAccountData);
-        return bilibiliAnimeAPI.getAnimeStreamFromFunctionCompute(ep, biliBiliSessData, biliBiliqn, remoteUrl);
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieStreamFromFunctionCompute(ep, biliBiliSessData, biliBiliqn, remoteUrl);
     }
 
 }
