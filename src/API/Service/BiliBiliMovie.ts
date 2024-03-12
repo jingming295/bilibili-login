@@ -1,17 +1,16 @@
 import { Context, Service } from "koishi";
 import { AnimeDetailEPSS, AnimeDetailMDID, AnimeSeasonSection, AnimeStreamFormat, BilibiliAccountData } from "../..";
 import { Select } from "../Database/select-database";
-import { BiliBiliAnimeApi } from "../BiliBiliAPI/BiliBiliAnime";
-import { promises } from "dns";
+import { BiliBiliAnimeApi } from "../BiliBiliAPI/BiliBiliMovie";
 
-export * from '../BiliBiliAPI/BiliBiliAnime/AnimeStreamInterface';
-export * from '../BiliBiliAPI/BiliBiliAnime/AnimeDetailInterface';
+export * from '../BiliBiliAPI/BiliBiliMovie/MovieStreamInterface';
+export * from '../BiliBiliAPI/BiliBiliMovie/MovieDetailInterface';
 
-export class BiliBiliAnime extends Service
+export class BiliBiliMovie extends Service
 {
     constructor(ctx: Context)
     {
-        super(ctx, 'BiliBiliAnime', true);
+        super(ctx, 'BiliBiliMovie', true);
         this.ctx = ctx;
     }
 

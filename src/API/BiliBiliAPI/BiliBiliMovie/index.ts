@@ -1,6 +1,6 @@
 import { sendFetch } from "..";
-import { AnimeDetailEPSS, AnimeDetailMDID, AnimeSeasonSection } from "./AnimeDetailInterface";
-import { AnimeStreamFormat } from "./AnimeStreamInterface";
+import { AnimeDetailEPSS, AnimeDetailMDID, AnimeSeasonSection } from "./MovieDetailInterface";
+import { AnimeStreamFormat } from "./MovieStreamInterface";
 
 
 export class BiliBiliAnimeApi extends sendFetch
@@ -153,6 +153,8 @@ export class BiliBiliAnimeApi extends sendFetch
             return null;
         }
     }
+
+    
 
 
 }

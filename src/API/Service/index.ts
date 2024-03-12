@@ -1,11 +1,11 @@
 
-import { BiliBiliAnime } from './BiliBiliAnime';
+import { BiliBiliMovie } from './BiliBiliMovie';
 import { BiliBiliSearch } from './BiliBiliSearch';
 import { BiliBiliLogin } from './BilibiliLogin';
 import { BiliBiliVideo } from './BilibiliVideo';
 export * from './BilibiliLogin'
 export * from './BilibiliVideo'
-export * from './BiliBiliAnime'
+export * from './BiliBiliMovie'
 export * from './BiliBiliSearch'
 
 declare module 'koishi' {
@@ -13,7 +13,7 @@ declare module 'koishi' {
   {
     BiliBiliLogin: BiliBiliLogin;
     BiliBiliVideo: BiliBiliVideo;
-    BiliBiliAnime: BiliBiliAnime;
+    BiliBiliAnime: BiliBiliMovie;
     BiliBiliSearch: BiliBiliSearch;
   }
 }

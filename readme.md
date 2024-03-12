@@ -40,7 +40,7 @@ export async function apply(ctx: Context)
 {
   const bl = ctx.BiliBiliLogin
   const bv = ctx.BiliBiliLogin
-  const ba = ctx.BiliBiliAnime
+  const bm = ctx.BiliBiliMovie
 
   const bilibiliAccountData = await bl.getBilibiliAccountData() // 获取账号cookie
   console.log(bilibiliAccountData)
@@ -48,7 +48,7 @@ export async function apply(ctx: Context)
   const bvideo = await bv.getBilibiliVideoStream(834398004, null, 1359369314, 112, 'html', 1) // 获取b站视频流信息
   console.log(bvideo)
 
-  const animeData = ba.getAnimeDetailEPSS(null, 278373) // 获取番剧基本信息
+  const animeData = bm.getAnimeDetailEPSS(null, 278373) // 获取番剧基本信息
   console.log(animeData)
 }
 ```

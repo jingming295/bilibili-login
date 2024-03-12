@@ -1,27 +1,25 @@
 import { Context, Logger } from "koishi";
 import { Select } from "./Database/select-database";
 import { BilibiliAccount } from "./BilibiliAccount";
-import { BiliBiliAnime, BiliBiliLogin, BiliBiliSearch, BiliBiliVideo } from "./Service";
+import { BiliBiliMovie, BiliBiliLogin, BiliBiliSearch, BiliBiliVideo } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
 import { Config } from "./Configuration";
-import { BilibiliAccountData } from "../";
 
 export async function apply(ctx: Context, Config: Config)
 {
   ctx.plugin(BiliBiliLogin);
   ctx.plugin(BiliBiliVideo);
-  ctx.plugin(BiliBiliAnime)
+  ctx.plugin(BiliBiliMovie)
   ctx.plugin(BiliBiliSearch)
 
   // let x 
-
 
   // const bl = ctx.bilibiliLogin
   // x = await bl.getNavUserData()
 
   // const bv = ctx.BiliBiliVideo
-  // x = await bv.likeTag(89772773, 12620189)
+  // x = await bv.getRecommendVideoFromMainPage()
 
   // const ba = ctx.BiliBiliAnime
   // x = await ba.getAnimeStream(63292297, null, 278373, 129528925, 80, 4048)
@@ -29,7 +27,7 @@ export async function apply(ctx: Context, Config: Config)
   // const bs = ctx.BiliBiliSearch
   // x = await bs.getSearchRequestByArticle('1', 1)
 
-  // console.log(x?.data);
+  // console.log(x?.data?.item[0]);
 
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);
