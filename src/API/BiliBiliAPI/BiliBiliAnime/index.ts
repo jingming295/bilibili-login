@@ -19,7 +19,7 @@ export class BiliBiliAnimeApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getAnimeDetailMDID: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -52,7 +52,7 @@ export class BiliBiliAnimeApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getAnimeDetailEPSS: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -71,7 +71,7 @@ export class BiliBiliAnimeApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getAnimeSeasonSection: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -93,7 +93,7 @@ export class BiliBiliAnimeApi extends sendFetch
             fnval: number = 1
         )
     {
-        const url = 'https://api.bilibili.com/pgc/player/web/v2/playurl';
+        const url = 'https://api.bilibili.com/pgc/player/web/playurl';
 
         const params = new URLSearchParams({
             qn: qn.toString(),
@@ -123,7 +123,7 @@ export class BiliBiliAnimeApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getAnimeStream: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -131,15 +131,17 @@ export class BiliBiliAnimeApi extends sendFetch
     public async getAnimeStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string)
     {
         const url = remoteUrl + '/GetBiliBiliBangumiStream';
-        const params = {
+        const params = new URLSearchParams({
             ep_id: ep.toString(),
             qn: biliBiliqn.toString(),
             sessdata: biliBiliSessData
-        };
+        });
 
         const headers: Headers = this.returnCommonHeaders();
 
-        const response = await this.sendPost(url, new URLSearchParams(params), headers);
+        headers.set('Content-Type', 'application/x-www-form-urlencoded');
+
+        const response = await this.sendPost(url, params, headers);
 
         if (response.ok)
         {
@@ -147,7 +149,7 @@ export class BiliBiliAnimeApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getAnimeStreamFromFunctionCompute: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }

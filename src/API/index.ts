@@ -1,7 +1,7 @@
 import { Context, Logger } from "koishi";
 import { Select } from "./Database/select-database";
 import { BilibiliAccount } from "./BilibiliAccount";
-import { BiliBiliAnime, BiliBiliLogin, BiliBiliVideo } from "./Service";
+import { BiliBiliAnime, BiliBiliLogin, BiliBiliSearch, BiliBiliVideo } from "./Service";
 import { Update } from "./Database/update-database";
 import { clearInterval } from "timers";
 import { Config } from "./Configuration";
@@ -12,6 +12,7 @@ export async function apply(ctx: Context, Config: Config)
   ctx.plugin(BiliBiliLogin);
   ctx.plugin(BiliBiliVideo);
   ctx.plugin(BiliBiliAnime)
+  ctx.plugin(BiliBiliSearch)
 
   // let x 
 
@@ -24,8 +25,11 @@ export async function apply(ctx: Context, Config: Config)
 
   // const ba = ctx.BiliBiliAnime
   // x = await ba.getAnimeStream(63292297, null, 278373, 129528925, 80, 4048)
-  
-  // console.log(x);
+
+  // const bs = ctx.BiliBiliSearch
+  // x = await bs.getSearchRequestByArticle('1', 1)
+
+  // console.log(x?.data);
 
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);
@@ -35,7 +39,7 @@ export async function apply(ctx: Context, Config: Config)
   
   try
   {
-    let bilibiliAccountData:BilibiliAccountData[] = await select.select() as unknown as BilibiliAccountData[];
+    let bilibiliAccountData = await select.select();
 
     // 如果发现数据库中没有Cookie信息，就执行初始化
     if (bilibiliAccountData.length !== 1)

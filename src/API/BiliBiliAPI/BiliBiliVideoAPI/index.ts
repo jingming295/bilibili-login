@@ -114,6 +114,8 @@ export class BiliBiliVideoApi extends sendFetch
 
         const headers: Headers = this.returnCommonHeaders();
 
+        headers.set('content-type', 'application/x-www-form-urlencoded');
+
         const response = await this.sendPost(url, params, headers);
 
         if (response.ok)
@@ -122,7 +124,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn('Warn:', response.statusText);
+            this.logger.warn(`getBilibiliVideoStreamFromFunctionCompute: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -220,7 +222,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`likeBilibiliVideo: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`likeOrDislikeBilibiliVideo: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -248,7 +250,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`checkIsLiked: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`checkIsLikedAndUnliked: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -351,7 +353,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`AddFavorite: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`addFavorite: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -378,7 +380,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`AddFavorite: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`checkIsFavorite: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -570,7 +572,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`getRecommandVideoFromVideo: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getRecommandVideoFromSingleVideo: ${response.statusText} code: ${response.status}`);
             return null;
         }
 
@@ -646,7 +648,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`getShortVideoRecommend: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getRecommendShortVideo: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -948,7 +950,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`getAIConclusionAboutVideo: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`likeAndDislikeAIConclusion: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }
@@ -1048,7 +1050,7 @@ export class BiliBiliVideoApi extends sendFetch
             return data;
         } else
         {
-            this.logger.warn(`seasonsArchivesList: ${response.statusText} code: ${response.status}`);
+            this.logger.warn(`getSeasonArchivesList: ${response.statusText} code: ${response.status}`);
             return null;
         }
     }

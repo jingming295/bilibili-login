@@ -2,7 +2,7 @@ export interface AnimeStreamFormat
 {
     code: number;
     message: string;
-    result: {
+    result?: {
         accept_format: string;
         code: number;
         seek_param: string;

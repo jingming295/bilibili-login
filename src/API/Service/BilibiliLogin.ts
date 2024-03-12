@@ -20,8 +20,8 @@ export class BiliBiliLogin extends Service
   public async getBilibiliAccountData(): Promise<BilibiliAccountData>
   {
     const select = new Select(this.ctx);
-    const data: BilibiliAccountData[] = await select.select() as unknown as BilibiliAccountData[];
-    const bilibiliAccountData: BilibiliAccountData = data[0];
+    const data = await select.select();
+    const bilibiliAccountData = data[0];
     return bilibiliAccountData;
   }
 
