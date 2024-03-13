@@ -103,10 +103,10 @@ export class BiliBiliMovie extends Service
      * @param remoteUrl 
      * @returns 
      */
-    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string): Promise<MovieStreamFormat | null>{
+    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliqn: number, remoteUrl: string): Promise<MovieStreamFormat | null>{
         const bilibiliAccountData = await this.getBilibiliAccountData();
         const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
-        return bilibiliMovieAPI.getMovieStreamFromFunctionCompute(ep, biliBiliSessData, biliBiliqn, remoteUrl);
+        return bilibiliMovieAPI.getMovieStreamFromFunctionCompute(ep, biliBiliqn, remoteUrl);
     }
 
     /**

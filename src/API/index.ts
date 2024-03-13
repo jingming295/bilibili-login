@@ -31,9 +31,9 @@ export async function apply(ctx: Context, Config: Config)
   // x = await bs.followMovie('1', 1)
 
   const lb = ctx.BiliBiliLive
-  x = await lb.getLiveRoomInitDetail(732)
+  x = await lb.getLiveStream(732, 'web',4)
 
-  console.log(x);
+  console.log(x?.data);
 
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);

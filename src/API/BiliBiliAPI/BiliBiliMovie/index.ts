@@ -138,13 +138,13 @@ export class BiliBiliMovieApi extends SendFetch
      * @param remoteUrl 
      * @returns 
      */
-    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string)
+    public async getMovieStreamFromFunctionCompute(ep: number, biliBiliqn: number, remoteUrl: string)
     {
         const url = remoteUrl + '/GetBiliBiliBangumiStream';
         const params = new URLSearchParams({
             ep_id: ep.toString(),
             qn: biliBiliqn.toString(),
-            sessdata: biliBiliSessData
+            sessdata: this.BilibiliAccountData?.SESSDATA || '',
         });
 
         const headers: Headers = this.returnCommonHeaders();
