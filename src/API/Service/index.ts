@@ -1,11 +1,11 @@
 
 import { BiliBiliMovie } from './BiliBiliMovie';
 import { BiliBiliSearch } from './BiliBiliSearch';
-import { BiliBiliLogin } from './BiliBiliLogin';
-import { BiliBiliVideo } from './BiliBiliVideo';
+import { BiliBiliLogin } from './BilibiliLogin';
+import { BiliBiliVideo } from './BilibiliVideo';
 import { BiliBiliLive } from './BiliBiliLive';
-export * from './BiliBiliLogin'
-export * from './BiliBiliVideo'
+export * from './BilibiliLogin'
+export * from './BilibiliVideo'
 export * from './BiliBiliMovie'
 export * from './BiliBiliSearch'
 export * from './BiliBiliLive'

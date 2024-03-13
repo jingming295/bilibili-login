@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bilibili-login",
   "description": "Bilibili API 服务，目前提供三个服务: BiliBiliLogin,  BiliBiliVideo, BiliBiliAnime",
-  "version": "0.1.42",
+  "version": "0.1.44",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
