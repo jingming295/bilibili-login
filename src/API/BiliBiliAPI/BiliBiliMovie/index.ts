@@ -1,9 +1,11 @@
-import { sendFetch } from "..";
+import { SendFetch } from "..";
+import { FollowMovie } from "./FollowMovieInterface";
 import { MovieDetailEPSS, MovieDetailMDID, MovieSeasonSection } from "./MovieDetailInterface";
 import { MovieStreamFormat } from "./MovieStreamInterface";
+import { TimeLine } from "./TimeLineInterface";
 
 
-export class BiliBiliMovieApi extends sendFetch
+export class BiliBiliMovieApi extends SendFetch
 {
     public async getMovieDetailMDID(media_id: string)
     {
@@ -128,6 +130,14 @@ export class BiliBiliMovieApi extends sendFetch
         }
     }
 
+    /**
+     * fc
+     * @param ep 
+     * @param biliBiliSessData 
+     * @param biliBiliqn 
+     * @param remoteUrl 
+     * @returns 
+     */
     public async getMovieStreamFromFunctionCompute(ep: number, biliBiliSessData: string, biliBiliqn: number, remoteUrl: string)
     {
         const url = remoteUrl + '/GetBiliBiliBangumiStream';
@@ -154,7 +164,87 @@ export class BiliBiliMovieApi extends sendFetch
         }
     }
 
-    
+    /**
+     * 获取番剧时间线
+     * @param types 
+     * @param before 
+     * @param after 
+     * @returns 
+     */
+    public async getMovieTimeLine(
+        types: string,
+        before: number,
+        after: number,
+    ){
+        const url = 'https://api.bilibili.com/pgc/web/timeline';
+        const params = new URLSearchParams({
+            types: types,
+            before: before.toString(),
+            after: after.toString()
+        });
 
+        const headers = this.returnBilibiliHeaders();
+
+        const response = await this.sendGet(url, params, headers);
+
+        if (response.ok)
+        {
+            const data:TimeLine = await response.json();
+            return data;
+        } else
+        {
+            this.logger.warn(`getMovieTimeLine: ${response.statusText} code: ${response.status}`);
+            return null;
+        }
+
+    }
+
+    public async followMovie(season_id:number){
+        const url = 'https://api.bilibili.com/pgc/web/follow/add';
+        const params = new URLSearchParams({
+            season_id: season_id.toString(),
+            csrf: this.BilibiliAccountData?.csrf || ''
+        });
+
+        const headers = this.returnBilibiliHeaders();
+
+        headers.set('Content-Type', 'application/x-www-form-urlencoded');
+
+        const response = await this.sendPost(url, params, headers);
+
+        if (response.ok)
+        {
+            const data:FollowMovie = await response.json();
+            return data;
+        } else
+        {
+            this.logger.warn(`followMovie: ${response.statusText} code: ${response.status}`);
+            return null;
+        }
+    }
+
+    public async unfollowMovie(season_id:number){
+        const url = 'https://api.bilibili.com/pgc/web/follow/del';
+        const params = new URLSearchParams({
+            season_id: season_id.toString(),
+            csrf: this.BilibiliAccountData?.csrf || ''
+        });
+
+        const headers = this.returnBilibiliHeaders();
+
+        headers.set('Content-Type', 'application/x-www-form-urlencoded');
+
+        const response = await this.sendPost(url, params, headers);
+
+        if (response.ok)
+        {
+            const data:FollowMovie = await response.json();
+            return data;
+        } else
+        {
+            this.logger.warn(`unfollowMovie: ${response.statusText} code: ${response.status}`);
+            return null;
+        }
+    }
 
 }

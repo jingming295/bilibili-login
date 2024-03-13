@@ -1,10 +1,12 @@
 import { Context, Service } from "koishi";
-import { MovieDetailEPSS, MovieDetailMDID, MovieSeasonSection, MovieStreamFormat, BilibiliAccountData } from "../..";
+import { MovieDetailEPSS, MovieDetailMDID, MovieSeasonSection, MovieStreamFormat, BilibiliAccountData, TimeLine, FollowMovie } from "../..";
 import { Select } from "../Database/select-database";
 import { BiliBiliMovieApi } from "../BiliBiliAPI/BiliBiliMovie";
 
 export * from '../BiliBiliAPI/BiliBiliMovie/MovieStreamInterface';
 export * from '../BiliBiliAPI/BiliBiliMovie/MovieDetailInterface';
+export * from '../BiliBiliAPI/BiliBiliMovie/TimeLineInterface';
+export * from '../BiliBiliAPI/BiliBiliMovie/FollowMovieInterface';
 
 export class BiliBiliMovie extends Service
 {
@@ -67,6 +69,7 @@ export class BiliBiliMovie extends Service
     }
 
     /**
+     * 获取视频流信息
      * @{@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/videostream_url.md}
      * @param avid 
      * @param bvid 
@@ -106,4 +109,47 @@ export class BiliBiliMovie extends Service
         return bilibiliMovieAPI.getMovieStreamFromFunctionCompute(ep, biliBiliSessData, biliBiliqn, remoteUrl);
     }
 
+    /**
+     * 番剧或影视时间线
+     * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/timeline.md}
+     * @param types 必要 类别 1:番剧 2:电影 3:国创
+     * @param before 必要 开始于前几日 ∈N∩[0,7]
+     * @param after 必要 结束于后几日 ∈N∩[0,7]
+     * @returns {Promise<TimeLine | null>}
+     */
+    public async getMovieTimeLine(
+        types: string,
+        before: number,
+        after: number,
+    ): Promise<TimeLine | null>{
+        const bilibiliAccountData = await this.getBilibiliAccountData();
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.getMovieTimeLine(types, before, after);
+    }
+
+    /**
+     * 追番
+     * 目前还不能成功，目测可能要激活cookie，但是我还不知道怎么激活
+     * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/follow.md}
+     * @param season_id 必要 剧集ssid
+     * @returns {Promise<FollowMovie | null>}
+     */
+    public async followMovie(season_id: number): Promise<FollowMovie | null>{
+        const bilibiliAccountData = await this.getBilibiliAccountData();
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.followMovie(season_id);
+    }
+
+    /**
+     * 取消追番
+     * 目前还不能成功，目测可能要激活cookie，但是我还不知道怎么激活
+     * @see {@link https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/bangumi/follow.md}
+     * @param season_id 必要 剧集ssid
+     * @returns {Promise<FollowMovie | null>}
+     */
+    public async unfollowMovie(season_id: number): Promise<FollowMovie | null>{
+        const bilibiliAccountData = await this.getBilibiliAccountData();
+        const bilibiliMovieAPI = new BiliBiliMovieApi(bilibiliAccountData);
+        return bilibiliMovieAPI.unfollowMovie(season_id);
+    }
 }

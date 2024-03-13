@@ -1,5 +1,5 @@
 import { BVideoStream } from "./StreamInterface";
-import { sendFetch } from "..";
+import { SendFetch } from "..";
 import { videoStatus } from "./VideoStatusInterface";
 import { BVideoDetail } from "./VideoDetailInterface";
 import { AddCoin, AddFavorite, LikeVideo, ShareVideo, hasLiked, isAddFavorited, isAddedCoin, likeTriple } from "./ActionInterface";
@@ -16,7 +16,7 @@ import { AIConclusion, likeAndDislikeAIConclusion } from "./AIConclusionInterfac
 import { AppealType, MakeAppealResult } from "./AppealInterface";
 import { SeasonArchives } from "./SeasonArchivesInterface";
 
-export class BiliBiliVideoApi extends sendFetch
+export class BiliBiliVideoApi extends SendFetch
 {
 
     /**

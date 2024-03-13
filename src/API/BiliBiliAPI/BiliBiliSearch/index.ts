@@ -1,9 +1,9 @@
 import { Context } from "koishi";
-import { sendFetch } from "..";
+import { SendFetch } from "..";
 import { WBI } from "../../Crypto/WBI";
 import { SearchRequest, SearchRequestByType, SearchRequestByTypeArticle, SearchRequestByTypeLive, SearchRequestByTypeLiveRoom, SearchRequestByTypeLiveUser, SearchRequestByTypeMediaBangumiAndMediaFT, SearchRequestByTypePhoto, SearchRequestByTypeVideo } from "./SearchRequestInterface";
 
-export class BiliBiliSearchApi extends sendFetch
+export class BiliBiliSearchApi extends SendFetch
 {
 
     /**
