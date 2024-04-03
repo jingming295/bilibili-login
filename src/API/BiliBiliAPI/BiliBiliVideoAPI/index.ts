@@ -84,9 +84,9 @@ export class BiliBiliVideoApi extends SendFetch
         fnval && params.set('fnval', fnval.toString());
         platform && params.set('platform', platform);
         const wbi = new WBI(ctx);
-        const { w_rid, wts } = await wbi.main(params);
-        w_rid && params.set('w_rid', w_rid);
-        wts && params.set('wts', wts.toString());
+        const wbidata = await wbi.main(params);
+        wbidata.w_rid && params.set('w_rid', wbidata.w_rid);
+        wbidata.wts && params.set('wts', wbidata.wts.toString());
         const headers = this.returnBilibiliHeaders();
         const response = await this.sendGet(url, params, headers);
         if (response.ok)
@@ -494,10 +494,10 @@ export class BiliBiliVideoApi extends SendFetch
         });
 
         const wbi = new WBI(ctx);
-        const { w_rid, wts } = await wbi.main(params);
+        const wbidata = await wbi.main(params);
 
-        w_rid && params.set('w_rid', w_rid);
-        wts && params.set('wts', wts.toString());
+        wbidata.w_rid && params.set('w_rid', wbidata.w_rid);
+        wbidata.wts && params.set('wts', wbidata.wts.toString());
 
         const headers = this.returnBilibiliHeaders();
 
@@ -885,10 +885,10 @@ export class BiliBiliVideoApi extends SendFetch
         bvid && params.set('bvid', bvid);
 
         const wbi = new WBI(ctx);
-        const { w_rid, wts } = await wbi.main(params);
+        const wbidata = await wbi.main(params);
 
-        w_rid && params.set('w_rid', w_rid);
-        wts && params.set('wts', wts.toString());
+        wbidata.w_rid && params.set('w_rid', wbidata.w_rid);
+        wbidata.wts && params.set('wts', wbidata.wts.toString());
 
         const headers = this.returnBilibiliHeaders();
         const response = await this.sendGet(url, params, headers);
@@ -930,8 +930,8 @@ export class BiliBiliVideoApi extends SendFetch
 
         // 是的，他需要空的参数
         const wbi = new WBI(ctx);
-        const { w_rid, wts } = await wbi.main(params);
-        const url = `https://api.bilibili.com/x/web-interface/view/conclusion/set?w_rid=${w_rid}&wts=${wts}`;
+        const wbidata = await wbi.main(params);
+        const url = `https://api.bilibili.com/x/web-interface/view/conclusion/set?w_rid=${wbidata.w_rid}&wts=${wbidata.wts}`;
 
         aid && params.set('aid', aid.toString());
         bvid && params.set('bvid', bvid);

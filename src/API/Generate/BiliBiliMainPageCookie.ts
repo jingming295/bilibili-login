@@ -1,7 +1,6 @@
 import { Context } from 'koishi';
 import { } from 'koishi-plugin-puppeteer';
 import { MainPageCookie } from './MainPageCookieInterface';
-import { Select } from '../Database/select-database';
 
 export class BiliBiliMainPageCookie
 {
@@ -11,12 +10,14 @@ export class BiliBiliMainPageCookie
     }
     async gen(ctx: Context)
     {
+        let data: MainPageCookie = {};
         const page = await ctx.puppeteer.page();
+        if (!page) return data;
         page.goto('https://www.bilibili.com');
 
         await this.waitForTimeout(1000);
         const cookies = await page.cookies();
-        let data: MainPageCookie = {};
+        
         cookies.forEach((cookie) => {
             data[cookie.name] = cookie
         })

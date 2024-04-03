@@ -22,18 +22,18 @@ export async function apply(ctx: Context, Config: Config)
   // x = await bl.getNavUserData()
 
   // const bv = ctx.BiliBiliVideo
-  // x = await bv.getBilibiliVideoDetail(76566179, 'BV11J411R7H5')
+  // x = await bv.getRecommendVideoFromMainPage()
 
   // const ba = ctx.BiliBiliMovie
   // x = await ba.unfollowMovie(22088)
 
-  // const bs = ctx.BiliBiliSearch
-  // x = await bs.followMovie('1', 1)
+  const bs = ctx.BiliBiliSearch
+  x = await bs.getSearchRequestByTypeVideo('鬼灭之刃', 1)
 
   // const lb = ctx.BiliBiliLive
   // x = await lb.getLiveStream(732, 'web',4)
 
-  // console.log(x?.data);
+  console.log(x?.data);
 
   const logger = new Logger('bilibili-login');
   const select = new Select(ctx);

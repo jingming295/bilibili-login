@@ -31,6 +31,7 @@ export class WBI
     public async main(Params: URLSearchParams)
     {
         const web_keys = await this.getWbiKeys();
+        if(!web_keys) return this.extractParams(null)
         const params = Object.fromEntries(Params.entries()),
             img_key = web_keys.img_key,
             sub_key = web_keys.sub_key;
@@ -38,10 +39,10 @@ export class WBI
         return this.extractParams(query);
     }
 
-    private extractParams(wbikey: string): { w_rid: string | null, wts: number | null } {
+    private extractParams(wbikey: string | null): { w_rid: string | null, wts: number | null } {
         let w_rid: string | null = null;
         let wts: number | null = null;
-    
+        if (!wbikey) return { w_rid, wts };
         const paramsArray = wbikey.split("&");
         paramsArray.forEach(param => {
             const [name, value] = param.split("=");
@@ -59,7 +60,7 @@ export class WBI
     {
         const select = new Select(this.ctx);
         const bilibiliAccountDataD = await select.select() as unknown as BilibiliAccountData[];
-        if (bilibiliAccountDataD.length !== 1) throw new Error('数据无效');
+        if (bilibiliAccountDataD.length !== 1) return null
         const bilibiliAccountData = bilibiliAccountDataD[0];
         const bilibiliLoginApi = new BiliBiliLoginApi(bilibiliAccountData);
         const NavUserData = await bilibiliLoginApi.getNavUserData();

@@ -22,10 +22,10 @@ export class BiliBiliSearchApi extends SendFetch
 
         const wbi = new WBI(ctx);
 
-        const { w_rid, wts } = await wbi.main(params);
+        const wbidata = await wbi.main(params);
 
-        w_rid && params.append('w_rid', w_rid);
-        wts && params.append('wts', wts.toString());
+        wbidata.w_rid && params.append('w_rid', wbidata.w_rid);
+        wbidata.wts && params.append('wts', wbidata.wts.toString());
 
         const headers = this.returnBilibiliHeaders();
 
@@ -88,9 +88,9 @@ export class BiliBiliSearchApi extends SendFetch
         category_id && params.append('category_id', category_id.toString());
 
         const wbi = new WBI(ctx);
-        const { w_rid, wts } = await wbi.main(params);
-        w_rid && params.append('w_rid', w_rid);
-        wts && params.append('wts', wts.toString());
+        const wbidata = await wbi.main(params);
+        wbidata.w_rid && params.append('w_rid', wbidata.w_rid);
+        wbidata.wts && params.append('wts', wbidata.wts.toString());
 
         const headers = this.returnBilibiliHeaders();
         const response = await this.sendGet(url, params, headers);
