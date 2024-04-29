@@ -13,6 +13,7 @@ export class SendFetch
     public async sendGet(url: string, params: URLSearchParams, headers: Headers)
     {
         const fullUrl = `${url}?${params.toString()}`;
+        // console.log(fullUrl)
         if (!params.get('csrf') && this.BilibiliAccountData) params.set('csrf', this.BilibiliAccountData.csrf);
         const response = await fetch(fullUrl, {
             method: 'GET',
