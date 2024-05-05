@@ -8,11 +8,11 @@ const { JSDOM } = jsdom;
 
 export class BiliBiliLoginApi extends SendFetch
 {
-    public async QRLogin(qrcode_key: string, CookieData: MainPageCookie)
+    public async QRLogin(qrcode_key: string)
     {
         const url = 'https://passport.bilibili.com/x/passport-login/web/qrcode/poll';
         const headers = this.returnBilibiliHeaders();
-        headers.set('cookie', `bili_ticket_expires=${CookieData['bili_ticket_expires']?.value}; bili_ticket=${CookieData['bili_ticket']?.value};bmg_af_switch=${CookieData['bmg_af_switch']?.value};FEED_LIVE_VERSION=${CookieData['FEED_LIVE_VERSION']?.value};browser_resolution=${CookieData['browser_resolution']?.value};header_theme_version=${CookieData['header_theme_version']?.value};home_feed_column=${CookieData['home_feed_column']?.value};bmg_src_def_domain=${CookieData['bmg_src_def_domain']?.value};enable_web_push=${CookieData['enable_web_push']?.value};_uuid=${CookieData['_uuid']?.value};b_lsid=${CookieData['b_lsid']?.value};buvid3=${CookieData['buvid3']?.value};b_ut=${CookieData['b_ut']?.value};buvid_fp=${CookieData['buvid_fp']?.value};b_nut=${CookieData['b_nut']?.value};buvid4=${CookieData['buvid4']?.value};`);
+        // headers.set('cookie', `bili_ticket_expires=${CookieData['bili_ticket_expires']?.value}; bili_ticket=${CookieData['bili_ticket']?.value};bmg_af_switch=${CookieData['bmg_af_switch']?.value};FEED_LIVE_VERSION=${CookieData['FEED_LIVE_VERSION']?.value};browser_resolution=${CookieData['browser_resolution']?.value};header_theme_version=${CookieData['header_theme_version']?.value};home_feed_column=${CookieData['home_feed_column']?.value};bmg_src_def_domain=${CookieData['bmg_src_def_domain']?.value};enable_web_push=${CookieData['enable_web_push']?.value};_uuid=${CookieData['_uuid']?.value};b_lsid=${CookieData['b_lsid']?.value};buvid3=${CookieData['buvid3']?.value};b_ut=${CookieData['b_ut']?.value};buvid_fp=${CookieData['buvid_fp']?.value};b_nut=${CookieData['b_nut']?.value};buvid4=${CookieData['buvid4']?.value};`);
         const data = new URLSearchParams({
             qrcode_key: qrcode_key
         });
@@ -31,13 +31,11 @@ export class BiliBiliLoginApi extends SendFetch
     }
 
     async getQRCode
-        (
-            CookieData: MainPageCookie
-        )
+        ()
     {
         const url = 'https://passport.bilibili.com/x/passport-login/web/qrcode/generate';
         const headers = this.returnBilibiliHeaders();
-        headers.set('cookie', `bili_ticket_expires=${CookieData['bili_ticket_expires']?.value}; bili_ticket=${CookieData['bili_ticket']?.value};bmg_af_switch=${CookieData['bmg_af_switch']?.value};FEED_LIVE_VERSION=${CookieData['FEED_LIVE_VERSION']?.value};browser_resolution=${CookieData['browser_resolution']?.value};header_theme_version=${CookieData['header_theme_version']?.value};home_feed_column=${CookieData['home_feed_column']?.value};bmg_src_def_domain=${CookieData['bmg_src_def_domain']?.value};enable_web_push=${CookieData['enable_web_push']?.value};_uuid=${CookieData['_uuid']?.value};b_lsid=${CookieData['b_lsid']?.value};buvid3=${CookieData['buvid3']?.value};b_ut=${CookieData['b_ut']?.value};buvid_fp=${CookieData['buvid_fp']?.value};b_nut=${CookieData['b_nut']?.value};buvid4=${CookieData['buvid4']?.value};`);
+        // headers.set('cookie', `bili_ticket_expires=${CookieData['bili_ticket_expires']?.value}; bili_ticket=${CookieData['bili_ticket']?.value};bmg_af_switch=${CookieData['bmg_af_switch']?.value};FEED_LIVE_VERSION=${CookieData['FEED_LIVE_VERSION']?.value};browser_resolution=${CookieData['browser_resolution']?.value};header_theme_version=${CookieData['header_theme_version']?.value};home_feed_column=${CookieData['home_feed_column']?.value};bmg_src_def_domain=${CookieData['bmg_src_def_domain']?.value};enable_web_push=${CookieData['enable_web_push']?.value};_uuid=${CookieData['_uuid']?.value};b_lsid=${CookieData['b_lsid']?.value};buvid3=${CookieData['buvid3']?.value};b_ut=${CookieData['b_ut']?.value};buvid_fp=${CookieData['buvid_fp']?.value};b_nut=${CookieData['b_nut']?.value};buvid4=${CookieData['buvid4']?.value};`);
         const response = await this.sendGet(url, new URLSearchParams(''), headers);
         if (response.ok)
         {

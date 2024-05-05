@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bilibili-login",
   "description": "Bilibili API 服务，目前提供三个服务: BiliBiliLogin,  BiliBiliVideo, BiliBiliAnime",
-  "version": "0.1.48",
+  "version": "0.1.49",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -15,8 +15,7 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.16.8",
-    "koishi-plugin-puppeteer": "^3.7.3"
+    "koishi": "^4.16.8"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",

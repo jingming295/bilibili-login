@@ -8,7 +8,7 @@ import { Config } from "../Configuration";
 import { Refresh } from "../BiliBiliAPI/LoginAPI/interface";
 import qrcode from 'qrcode-terminal';
 import { BilibiliAccountData } from "../Database/interface";
-import { BiliBiliMainPageCookie } from "../Generate/BiliBiliMainPageCookie";
+// import { BiliBiliMainPageCookie } from "../Generate/BiliBiliMainPageCookie";
 
 export class BilibiliAccount
 {
@@ -43,11 +43,11 @@ export class BilibiliAccount
         const bilibiliAccountData = bilibiliAccountDataD[0];
         const biliBiliApi = new BiliBiliLoginApi(bilibiliAccountData);
 
-        const biliBiliMainPageCookie = new BiliBiliMainPageCookie();
+        // const biliBiliMainPageCookie = new BiliBiliMainPageCookie();
 
-        const cookieData = await biliBiliMainPageCookie.gen(this.ctx);
+        // const cookieData = await biliBiliMainPageCookie.gen(this.ctx);
 
-        let qrCode = await biliBiliApi.getQRCode(cookieData);
+        let qrCode = await biliBiliApi.getQRCode();
         if (!qrCode) throw new Error('无法获取二维码');
         let qrLogin;
         this.logger.info(`请使用B站APP扫描二维码进行登录`);
@@ -58,7 +58,7 @@ export class BilibiliAccount
         do
         {
             if (qrCode.code !== 0) throw new Error(`无法验证扫码登录, code:${qrCode.code} message:${qrCode.message}`);
-            qrLogin = await biliBiliApi.QRLogin(qrCode.data.qrcode_key, cookieData);
+            qrLogin = await biliBiliApi.QRLogin(qrCode.data.qrcode_key);
             if (!qrLogin) throw new Error('无法验证登录');
             if (qrLogin.data.code === 0)
             {
@@ -71,7 +71,7 @@ export class BilibiliAccount
             else if (qrLogin.data.code === 86038)
             {
                 this.logger.info('二维码已经失效，正在重新获取二维码');
-                qrCode = await biliBiliApi.getQRCode(cookieData);
+                qrCode = await biliBiliApi.getQRCode();
                 if (!qrCode) throw new Error('无法获取二维码');
                 qrcode.generate(qrCode.data.url, { small: true }, (qrcode) =>
                 {
@@ -104,7 +104,7 @@ export class BilibiliAccount
         {
             this.logger.info('成功登录');
             const insert = new Insert(this.ctx);
-            insert.insertIntoBilibiliAccountData(SESSDATA, bili_jct, refresh_token, DedeUserID, DedeUserID__ckMd5, cookieData);
+            insert.insertIntoBilibiliAccountData(SESSDATA, bili_jct, refresh_token, DedeUserID, DedeUserID__ckMd5);
             const bilibiliAD = await select.select();
             const bilibiliLA = new BiliBiliLoginApi(bilibiliAD[0]);
             await bilibiliLA.activateCookie();
@@ -202,9 +202,9 @@ export class BilibiliAccount
             this.logger.info('检测到需要刷新cookie');
 
             const refreshCookie = await this.getRefreshCookie(refreshData, csrf, refresh_token, SESSDATA);
-            const biliBiliMainPageCookie = new BiliBiliMainPageCookie();
-            const cookieData = await biliBiliMainPageCookie.gen(this.ctx);
-            update.setBilibiliAccountData(refreshCookie.SESSDATA, refreshCookie.bili_jct, refreshCookie.refresh_token, refreshCookie.DedeUserID, refreshCookie.DedeUserID__ckMd5, cookieData);
+            // const biliBiliMainPageCookie = new BiliBiliMainPageCookie();
+            // const cookieData = await biliBiliMainPageCookie.gen(this.ctx);
+            update.setBilibiliAccountData(refreshCookie.SESSDATA, refreshCookie.bili_jct, refreshCookie.refresh_token, refreshCookie.DedeUserID, refreshCookie.DedeUserID__ckMd5);
             this.logger.info('cookie已刷新，并且保存成功');
         }
     }
