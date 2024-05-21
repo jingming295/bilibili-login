@@ -7,4 +7,4 @@ export * from './API/Configuration'
 export * from './API/Service'
 
 
-export const inject = ['puppeteer', 'database'];
+export const inject = ['database'];
