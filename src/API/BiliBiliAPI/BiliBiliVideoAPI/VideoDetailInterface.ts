@@ -105,7 +105,7 @@ export interface VideoData
   like_icon: string;
   need_jump_bv: boolean;
   disable_show_up_info: boolean;
-  ai_rcmd:{
+  ai_rcmd: {
     id: number;
     goto: string;
     trackid: string;
@@ -117,7 +117,7 @@ export interface VideoData
  * BVideoDetail下的data的page
  * 如果视频有分页
  */
-interface BVideoDetailDataPage
+export interface BVideoDetailDataPage
 {
   cid: number;
   page: number;
